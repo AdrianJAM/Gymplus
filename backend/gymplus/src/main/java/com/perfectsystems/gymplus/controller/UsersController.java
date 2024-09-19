@@ -1,10 +1,9 @@
 package com.perfectsystems.gymplus.controller;
 
-import com.perfectsystems.gymplus.model.Users;
+import com.perfectsystems.gymplus.Exception.ResourceNotFoundException;
 import com.perfectsystems.gymplus.model.Users;
 import com.perfectsystems.gymplus.repository.UsersRepository;
 import com.perfectsystems.gymplus.service.UsersService;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -13,28 +12,26 @@ import java.util.Optional;
 
 
 @RestController
-@RequestMapping("public/api/user")
+@RequestMapping("api/user")
 public class UsersController {
 
-    @Autowired
+    private final UsersService usersService;
 
-    private UsersService usersService;
-    @Autowired
-    private UsersRepository usersRepository;
-
+    public UsersController(UsersService usersService) {
+        this.usersService = usersService;
+    }
 
     @GetMapping("/dni/{dni}")
     public ResponseEntity<Users> getUsersByDni(@PathVariable("dni") String dni) {
-        Optional<Users> user = usersService.findByDni(dni);
-
-        return user.map(ResponseEntity::ok)
-                .orElse(ResponseEntity.notFound().build());
-
+        Users user = usersService.findByDni(dni)
+                .orElseThrow(() -> new ResourceNotFoundException("User with DNI: " + dni + " not found"));
+        return new ResponseEntity<>(user, HttpStatus.OK);
     }
+
 
     @PostMapping
     public Users createUser(@RequestBody Users user) {
-        return usersRepository.save(user);
+        return usersService.save(user);
     }
 
     @PutMapping("/dni/{dni}")
@@ -42,11 +39,11 @@ public class UsersController {
         Optional<Users> userOptional = usersService.findByDni(dni);
         if (userOptional.isPresent()) {
 
-            Users existinguser = userOptional.get();
-            existinguser.setDni(user.getDni());
-            existinguser.setEmail(user.getEmail());
-            existinguser.setPassword(user.getPassword());
-            return new ResponseEntity<>(usersRepository.save(existinguser), HttpStatus.OK);
+            Users existingUser = userOptional.get();
+            existingUser.setDni(user.getDni());
+            existingUser.setEmail(user.getEmail());
+            existingUser.setPassword(user.getPassword());
+            return new ResponseEntity<>(usersService.save(existingUser), HttpStatus.OK);
         } else {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
@@ -55,7 +52,7 @@ public class UsersController {
     @DeleteMapping("/dni/{dni}")
     public ResponseEntity<Users> deleteUser(@PathVariable("dni") String dni) {
         try {
-            usersRepository.deleteByDni(dni);
+            usersService.deleteByDni(dni);
             return new ResponseEntity<>(HttpStatus.OK);
         } catch (Exception e) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
