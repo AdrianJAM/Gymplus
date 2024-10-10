@@ -1,0 +1,12 @@
+<div class="fixed inset-0 flex items-center justify-center z-50">
+  <div class="fixed inset-0 bg-black opacity-90" (click)="close()"></div>
+  <div class="rounded-lg shadow-lg z-10 p-6 max-w-md w-full relative">
+    <button
+      class="fixed top-4 right-4 text-2xl bg-red-500 text-white font-bold py-1 px-3 rounded"
+      (click)="close()"
+    >
+      X
+    </button>
+    <ng-content></ng-content>
+  </div>
+</div>

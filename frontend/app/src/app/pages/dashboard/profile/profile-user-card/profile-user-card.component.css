@@ -1,0 +1,9 @@
+/* styles.css */
+.perspective {
+    perspective: 1000px; /* Define la perspectiva para la rotación */
+  }
+  
+  .rotate-y-180 {
+    transform: rotateY(180deg); /* Rota la tarjeta en el eje Y */
+  }
+  
