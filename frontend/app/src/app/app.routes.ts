@@ -3,6 +3,7 @@ import { UserDashboardComponent } from './pages/dashboard/user-dashboard/user-da
 import { DashboardComponent } from './pages/dashboard/dashboard.component';
 import { HomePageComponent } from './pages/home-page/home-page.component';
 import { ProfileComponent } from './pages/dashboard/profile/profile.component';
+import { DashboardConfigComponent } from './pages/dashboard/dashboard-config/dashboard-config.component';
 
 export const routes: Routes = [
   {
@@ -21,6 +22,10 @@ export const routes: Routes = [
       {
         path: 'users/:id',
         component: ProfileComponent,
+      },
+      {
+        path: 'config',
+        component: DashboardConfigComponent,
       },
     ],
   },

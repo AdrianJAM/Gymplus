@@ -13,7 +13,7 @@
       <h1 class="text-lg font-bold text-black">Gymplus - mparde</h1>
     </div>
     <!-- Menu -->
-    <nav class="flex-1 px-4 py-2 ">
+    <nav class="flex-1 px-4 py-2">
       <ul>
         <li class="mb-4">
           <a
@@ -44,7 +44,7 @@
         </li>
         <li class="mb-4">
           <a
-            href="#"
+            href="dashboard/config"
             class="flex items-center p-2 text-base font-medium text-gray-800 rounded hover:bg-gray-700 hover:text-white transition duration-300 ease-in-out"
           >
             <span>🔧</span>
@@ -61,7 +61,6 @@
     <button
       class="absolute items-center justify-center ml-auto mt-[40vh] -translate-x-3 p-2 bg-gray-300 text-black rounded-full xl:hidden transition duration-500 ease-linear transform hover:scale-105"
       [ngClass]="{
-        '-translate-x-3': isSidebarOpen,
         'rotate-180': isSidebarOpen
       }"
       (click)="toggleSidebar()"

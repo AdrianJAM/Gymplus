@@ -1,0 +1,84 @@
+<ng-container *ngIf="data">
+  <div
+    class="flex flex-col items-start p-5 rounded-lg justify-center text-gray-800 bg-white"
+  >
+    <ng-container *ngIf="data.table">
+      <div class="overflow-x-auto max-w-[100vw-10vw]">
+        <table
+          class="table-auto min-w-full bg-white border border-gray-200 shadow-lg rounded-lg text-center"
+        >
+          <thead class="bg-gray-200">
+            <tr>
+              @for(header of data.table.headers; track header){
+              <th
+                class="px-4 py-2 text-center text-sm font-medium text-gray-900 uppercase tracking-wider"
+              >
+                {{ header }}
+              </th>
+              }
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let row of data.table.data">
+              <td
+                *ngFor="let headers of data.table.headers"
+                class="px-4 py-2 whitespace-nowrap"
+              >
+                {{ row[headers] }}
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </ng-container>
+  </div>
+</ng-container>
+
+<!-- <h1 *ngIf="data.title" class="text-secondary-3">{{ data.title }}</h1>
+    <ng-container *ngIf="data.description">
+      <p class="text-gray-400 text-sm italic">
+        {{ data.description }}
+      </p>
+    </ng-container>
+    @if(data.isAvailable){
+
+    <p class="text-alert-success flex w-full">
+      <svg
+        xmlns="http://www.w3.org/2000/svg"
+        width="24"
+        height="24"
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="currentColor"
+        stroke-width="2"
+        stroke-linecap="round"
+        stroke-linejoin="round"
+        class="icon icon-tabler icons-tabler-outline icon-tabler-circle-check"
+      >
+        <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+        <path d="M12 12m-9 0a9 9 0 1 0 18 0a9 9 0 1 0 -18 0" />
+        <path d="M9 12l2 2l4 -4" />
+      </svg>
+      Service is available
+    </p>
+    } @else {
+    <p>
+      <svg
+        xmlns="http://www.w3.org/2000/svg"
+        width="24"
+        height="24"
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="currentColor"
+        stroke-width="2"
+        stroke-linecap="round"
+        stroke-linejoin="round"
+        class="icon icon-tabler icons-tabler-outline icon-tabler-circle-check"
+      >
+        <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+        <path d="M12 12m-9 0a9 9 0 1 0 18 0a9 9 0 1 0 -18 0" />
+        <path d="M9 12l2 2l4 -4" />
+      </svg>
+      Service is not available
+    </p>
+    } -->
