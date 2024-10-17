@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { UserDashboardService } from '../user-dashboard/user-dashboard.service';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Params } from '@angular/router';
 import { User } from '../user-dashboard/user-dashboard.model';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
@@ -30,17 +30,15 @@ export class ProfileComponent implements OnInit {
     this.isCardOpen = false;
   }
 
-
-
   constructor(
     private _userDashboardService: UserDashboardService,
     private route: ActivatedRoute
   ) {}
 
   ngOnInit(): void {
-    this.route.params.subscribe((params: { [id: string]: any }) => {
+    this.route.params.subscribe((params: Params) => {
       const id = params['id'];
-      this._userDashboardService.getbyid(id).subscribe((data: any) => {
+      this._userDashboardService.getbyid(id).subscribe((data: User) => {
         console.log(data);
         this.user = data;
       });

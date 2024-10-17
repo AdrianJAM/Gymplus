@@ -1,6 +1,6 @@
 from flask import Blueprint
 
-from controllers.server_controller import ServerController
+from src.controllers.server_controller import ServerController
 
 server_routes = Blueprint("server_routes", __name__)
 

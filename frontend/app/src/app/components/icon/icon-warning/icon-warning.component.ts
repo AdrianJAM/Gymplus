@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, Input } from '@angular/core';
+import { Component } from '@angular/core';
 
 @Component({
   selector: 'app-icon-warning',
@@ -8,6 +8,4 @@ import { Component, Input } from '@angular/core';
   templateUrl: './icon-warning.component.html',
   styleUrl: './icon-warning.component.css',
 })
-export class IconWarningComponent {
-  @Input() iconClass: string = '';
-}
+export class IconWarningComponent {}

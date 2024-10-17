@@ -3,6 +3,6 @@ frontend/gymplus-front/package-lock.json
 frontend/gymplus-front/dist
 /test
 
-backend/src/.env
-/backend/src/.env
-/backend/src/dotenv
+backend/.env
+/backend/.env
+/backend/dotenv

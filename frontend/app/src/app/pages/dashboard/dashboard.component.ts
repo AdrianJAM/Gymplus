@@ -14,7 +14,7 @@ export class DashboardComponent implements OnInit {
   isLargeScreen = false;
 
   @HostListener('window:resize', ['$event'])
-  onResize(event: any) {
+  onResize() {
     this.checkScreenSize();
   }
 

@@ -10,7 +10,11 @@ export class DashboardConfigService {
   private url = environment.apiUrl;
   constructor(private http: HttpClient) {}
 
-  healthCheck(): Observable<any> {
-    return this.http.get(`${this.url}/health`);
+  healthCheck(): Observable<HealthCheck> {
+    return this.http.get<HealthCheck>(`${this.url}/health`);
   }
+}
+
+export interface HealthCheck {
+  status: string;
 }

@@ -11,29 +11,29 @@ export class UserDashboardService {
   private url = environment.apiUrl;
   constructor(private http: HttpClient) {}
 
-  getAll(): Observable<any> {
+  getAll(): Observable<User> {
     return this.http.get(`${this.url}/users`);
   }
 
-  create(user: any): Observable<any> {
-    return this.http.post(`${this.url}/user`, user);
+  create(user: User): Observable<User> {
+    return this.http.post<User>(`${this.url}/user`, user);
   }
-  getbyid(userId: string): Observable<any> {
-    return this.http.get(`${this.url}/user/${userId}`);
-  }
-
-  update(userId: string, user: User): Observable<any> {
-    return this.http.put(`${this.url}/users/${userId}`, user);
+  getbyid(userId: string): Observable<User> {
+    return this.http.get<User>(`${this.url}/user/${userId}`);
   }
 
-  delete(userId: string): Observable<any> {
-    return this.http.delete(`${this.url}/user/${userId}`);
+  update(userId: string, user: User): Observable<User> {
+    return this.http.put<User>(`${this.url}/users/${userId}`, user);
   }
 
-  getbyemail(email: string): Observable<any> {
-    return this.http.get(`${this.url}/user/email/${email}`);
+  delete(userId: string): Observable<void> {
+    return this.http.delete<void>(`${this.url}/user/${userId}`);
   }
-  getbyci(ci: string): Observable<any> {
-    return this.http.get(`${this.url}/user/ci/${ci}`);
+
+  getbyemail(email: string): Observable<User> {
+    return this.http.get<User>(`${this.url}/user/email/${email}`);
+  }
+  getbyci(ci: string): Observable<User> {
+    return this.http.get<User>(`${this.url}/user/ci/${ci}`);
   }
 }

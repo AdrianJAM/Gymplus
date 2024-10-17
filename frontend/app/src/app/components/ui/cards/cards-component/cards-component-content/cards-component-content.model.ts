@@ -1,9 +1,9 @@
-export interface CardContent {
-  title: string;
-  description: string;
-  isAvailable: boolean;
+export interface CardContent<T> {
+  title?: string;
+  description?: string;
+  isAvailable?: boolean;
   table?: {
     headers: string[];
-    data: any[];
+    data: T[];
   };
 }

@@ -1,21 +1,21 @@
 from flask import jsonify, request
-from services.user_service import UserService
+from src.services.user_service import UserService
 
 
 class UserController:
     user_service = UserService()
 
     @classmethod
-    def get_by_email(cls):
-        email = request.args.get("email")
+    def get_by_email(cls, email):
         user = cls.user_service.get_by_email(email)
-        return jsonify(user.to_dict()), 200 if user else 404
+        if user:
+            return jsonify(user), 200
+        return jsonify({"error": "User not found"}), 404
 
     @classmethod
-    def get_by_ci(cls):
-        ci = request.args.get("ci")
+    def get_by_ci(cls, ci):
         user = cls.user_service.get_by_ci(ci)
-        return jsonify(user.to_dict()), 200 if user else 404
+        return jsonify(user), 200 if user else 404
 
     @classmethod
     def get_all_users(cls):

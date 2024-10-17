@@ -1,4 +1,4 @@
-from repositories.server_repository import ServerRepository
+from src.repositories.server_repository import ServerRepository
 
 
 class ServerService:

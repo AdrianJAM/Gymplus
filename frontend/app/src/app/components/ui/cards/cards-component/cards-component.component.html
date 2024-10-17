@@ -1,54 +1,68 @@
 <ng-container *ngIf="data">
   <div class="p-6 my-4 bg-white shadow-lg rounded-lg w-full">
     <div
-      class="flex gap-2 items-center justify-start cursor-pointer select-none"
-      (click)="toggleChildren()"
+      class="flex gap-2 items-center justify-between cursor-pointer select-none"
     >
-      <ng-container *ngIf="getIconComponent()">
-        <ng-container *ngComponentOutlet="getIconComponent()"></ng-container>
-      </ng-container>
-      <ng-container *ngIf="data.title">
-        <h1 class="text-2xl font-semibold">
-          {{ data.title }}
-        </h1>
-      </ng-container>
-      <ng-container
-        *ngIf="(data.children && data.children.length > 0) || data.content"
+      <div
+        class="flex items-center justify-center gap-2"
+        (click)="toggleChildren()"
+        (keydown.enter)="toggleChildren()"
+        tabindex="0"
       >
-        <div class="cursor-pointer flex items-center">
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            width="14"
-            height="14"
-            viewBox="0 0 24 24"
-            fill="none"
-            stroke="currentColor"
-            stroke-width="2"
-            stroke-linecap="round"
-            stroke-linejoin="round"
-            class="icon icon-tabler icons-tabler-outline icon-tabler-plus rounded-full text-white transition-all duration-150 ease-linear delay-75"
-            [ngClass]="{
+        <!-- <ng-container *ngIf="getIconComponent()">
+          <ng-container *ngComponentOutlet="getIconComponent()"></ng-container>
+        </ng-container> -->
+        <ng-container *ngIf="data.title">
+          <h1 class="text-2xl font-semibold">
+            {{ data.title }}
+          </h1>
+        </ng-container>
+        <ng-container
+          *ngIf="(data.children && data.children.length > 0) || data.content"
+        >
+          <div class="cursor-pointer flex items-center">
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              width="14"
+              height="14"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              class="icon icon-tabler icons-tabler-outline icon-tabler-plus rounded-full text-white transition-all duration-150 ease-linear delay-75"
+              [ngClass]="{
               'rotate-45 bg-red-500': isOpen,
               'bg-primary': !isOpen,
             }"
-          >
-            <path stroke="none" d="M0 0h24v24H0z" fill="none" />
-            <path d="M12 5l0 14" />
-            <path d="M5 12l14 0" />
-          </svg>
+            >
+              <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+              <path d="M12 5l0 14" />
+              <path d="M5 12l14 0" />
+            </svg>
+          </div>
+        </ng-container>
+      </div>
+
+      <ng-container *ngIf="data.Buttons && data.Buttons.length > 0">
+        <div class="flex gap-2">
+          <ng-container *ngFor="let button of data.Buttons">
+            <div class="flex flex-shrink">
+              <app-cards-component-button [data]="button" />
+            </div>
+          </ng-container>
         </div>
       </ng-container>
     </div>
 
     <ng-container *ngIf="data.description">
       <p
+        (click)="toggleChildren()"
+        (keydown.enter)="toggleChildren()"
+        tabindex="0"
         class="text-gray-600 text-xs flex mt-2 ml-3 gap-2 items-center w-full lg:w-3/4 select-none"
       >
-        @if(data.descriptionIcon) {
-        <ng-container
-          *ngComponentOutlet="getDescriptionIconComponent()"
-        ></ng-container
-        >}
         {{ data.description }}
       </p>
     </ng-container>
@@ -58,7 +72,7 @@
       [ngClass]="{
         'max-h-0 opacity-0': !isOpen,
         'max-h-screen opacity-100': isOpen
-      }" 
+      }"
     >
       <ng-container *ngIf="data.children && data.children.length > 0">
         <ng-container *ngFor="let child of data.children">

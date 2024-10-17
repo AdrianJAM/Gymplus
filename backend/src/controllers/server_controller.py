@@ -1,6 +1,6 @@
 from flask import jsonify, request
 
-from services.server_service import ServerService
+from src.services.server_service import ServerService
 
 
 class ServerController:

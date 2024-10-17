@@ -1,10 +1,4 @@
-import {
-  Component,
-  Input,
-  OnChanges,
-  OnInit,
-  SimpleChanges,
-} from '@angular/core';
+import { Component, Input } from '@angular/core';
 import { CardContent } from './cards-component-content.model';
 import { CommonModule } from '@angular/common';
 
@@ -15,17 +9,15 @@ import { CommonModule } from '@angular/common';
   templateUrl: './cards-component-content.component.html',
   styleUrl: './cards-component-content.component.css',
 })
-export class CardsComponentContentComponent implements OnInit, OnChanges {
-  @Input() data!: CardContent;
+export class CardsComponentContentComponent {
+  @Input() data!: CardContent<unknown>;
 
-  ngOnInit(): void {
-    console.log('Data recibida:', this.data);
-  }
-  ngOnChanges(changes: SimpleChanges): void {
-    // Detecta cambios en las entradas y puede acceder a data cuando se actualice
-    if (changes['data']) {
-      console.log('Data recibida:', this.data);
+  getRowValue(row: unknown, header: string): string {
+    if (typeof row === 'object' && row !== null && header in row) {
+      return (row as Record<string, unknown>)[header]?.toString() ?? '';
     }
+    return ''; // o manejar el caso en el que row no sea válido
   }
+
   constructor() {}
 }

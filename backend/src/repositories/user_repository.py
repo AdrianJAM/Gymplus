@@ -2,7 +2,7 @@ import boto3
 from botocore.exceptions import ClientError
 import uuid
 
-from config import config
+from src.config import config
 
 
 class UserRepository:

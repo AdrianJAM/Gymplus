@@ -1,6 +1,9 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { environment } from '../../../../environments/environment';
-import { DashboardConfigService } from './dashboard-config.service';
+import {
+  DashboardConfigService,
+  HealthCheck,
+} from './dashboard-config.service';
 import { HttpClientModule } from '@angular/common/http';
 import { Subscription, catchError, interval, of } from 'rxjs';
 import { CardsComponentComponent } from '../../../components/ui/cards/cards-component/cards-component.component';
@@ -46,18 +49,13 @@ export class DashboardConfigComponent implements OnInit, OnDestroy {
             descriptionIcon: 'server',
             description:
               'Este es el core de los servicios de nuestra aplicacion web, aqui podras visualizar informacion acerca de este.',
-            content: [],
-          },
-          {
-            title: 'Grandchild Card 2',
-            description: 'Description of grandchild card 2.',
+            content: {
+              title: 'principal aws ec2 instance',
+              description: 'server: ' + this.url,
+              isAvailable: false,
+            },
           },
         ],
-      },
-      {
-        title: 'Child Card 2',
-        description: 'Description of child card 2.',
-        icon: 'check',
       },
     ],
   };
@@ -95,13 +93,13 @@ export class DashboardConfigComponent implements OnInit, OnDestroy {
     this._dashboardConfigService
       .healthCheck()
       .pipe(
-        catchError((error: any) => {
+        catchError((error: HealthCheck) => {
           console.error('Health check failed:', error);
           this.isAvailable = false;
           return of({ status: 'unhealthy' }); // Retorna un observable
         })
       )
-      .subscribe((data: any) => {
+      .subscribe((data: HealthCheck) => {
         if (data.status === 'healthy') {
           this.isAvailable = true;
           if (
@@ -109,7 +107,7 @@ export class DashboardConfigComponent implements OnInit, OnDestroy {
             this.data.children[0].children &&
             this.data.children[0].children[0].content
           ) {
-            this.data.children[0].children[0].content[0].isAvailable = true;
+            this.data.children[0].children[0].content.isAvailable = true;
           }
         } else {
           this.isAvailable = false;
@@ -118,7 +116,7 @@ export class DashboardConfigComponent implements OnInit, OnDestroy {
             this.data.children[0].children &&
             this.data.children[0].children[0].content
           ) {
-            this.data.children[0].children[0].content[0].isAvailable = false;
+            this.data.children[0].children[0].content.isAvailable = false;
           }
         }
         console.log(data);

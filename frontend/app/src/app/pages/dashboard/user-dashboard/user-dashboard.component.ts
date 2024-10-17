@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, HostListener, OnInit } from '@angular/core';
 import { UserDashboardService } from './user-dashboard.service';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
@@ -20,14 +20,11 @@ export class UserDashboardComponent implements OnInit {
 
   headerdsMapping: { [key: string]: string } = {
     name: 'Nombre',
-    email: 'Correo',
     ci: 'CI',
     phone: 'Telefono',
-    img_url: 'Imagen',
   };
 
   user: User = { id: '', name: '', email: '', ci: '', phone: '', img_url: '' };
-  editing: boolean = true;
   isCreating: boolean = false;
   data: CardData = {
     title: 'Gestion de usuarios',
@@ -40,12 +37,37 @@ export class UserDashboardComponent implements OnInit {
         headers: Object.keys(this.headerdsMapping).map((key) => {
           return key;
         }),
-        data: [],
+        data: this.users.length > 0 ? this.users : [],
       },
     },
+    Buttons: [
+      {
+        disabled: false,
+        icon: 'server',
+        action: () => {
+          this.isCreating = true;
+        },
+        tooltip: ' Crear un nuevo usuario',
+      },
+      {
+        title: 'exportar a excel',
+        icon: 'excel',
+        color: 'bg-green-500',
+        textcolor: 'text-white',
+        action: () => {
+          alert('Estamos trabajando en esta funcion...');
+        },
+        tooltip: 'Exportar a excel',
+      },
+    ],
   };
 
   constructor(private _userDashboardService: UserDashboardService) {}
+
+  @HostListener('document:keydown.escape', ['$event'])
+  handleKeyboardEvent() {
+    this.isCreating = false;
+  }
 
   getHeadersMapping() {
     return this.headerdsMapping;
@@ -59,21 +81,23 @@ export class UserDashboardComponent implements OnInit {
   }
 
   getAll() {
-    this._userDashboardService.getAll().subscribe((data: any) => {
-      console.log(data);
+    this._userDashboardService.getAll().subscribe((data: User[]) => {
+      console.log('users', data);
       this.users = data;
-      this.data.content.table.data = this.users;
+      if (this.data.content && this.data.content.table) {
+        this.data.content.table.data = data;
+      }
     });
   }
 
   create() {
-    this._userDashboardService.create(this.user).subscribe((data: any) => {
+    this._userDashboardService.create(this.user).subscribe((data: User) => {
       this.users.push(data);
       this.resetUser();
     });
   }
   getbyid(userId: string) {
-    this._userDashboardService.getbyid(userId).subscribe((data: any) => {
+    this._userDashboardService.getbyid(userId).subscribe((data: User) => {
       this.user = data;
     });
   }
@@ -81,20 +105,20 @@ export class UserDashboardComponent implements OnInit {
   update(userId: string) {
     this._userDashboardService
       .update(userId, this.user)
-      .subscribe((data: any) => {
-        this.editing = false;
+      .subscribe((data: User) => {
+        console.log(data);
         this.resetUser();
         this.getAll();
       });
   }
 
   delete(userId: string) {
-    this._userDashboardService.delete(userId).subscribe((data: any) => {
+    this._userDashboardService.delete(userId).subscribe((data: void) => {
+      console.log(data);
       this.getAll();
     });
   }
   cancel() {
-    this.editing = false;
     this.resetUser();
   }
   resetUser() {
