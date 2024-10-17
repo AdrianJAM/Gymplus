@@ -15,17 +15,8 @@ import { CommonModule } from '@angular/common';
   templateUrl: './cards-component-content.component.html',
   styleUrl: './cards-component-content.component.css',
 })
-export class CardsComponentContentComponent implements OnInit, OnChanges {
+export class CardsComponentContentComponent {
   @Input() data!: CardContent;
 
-  ngOnInit(): void {
-    console.log('Data recibida:', this.data);
-  }
-  ngOnChanges(changes: SimpleChanges): void {
-    // Detecta cambios en las entradas y puede acceder a data cuando se actualice
-    if (changes['data']) {
-      console.log('Data recibida:', this.data);
-    }
-  }
   constructor() {}
 }

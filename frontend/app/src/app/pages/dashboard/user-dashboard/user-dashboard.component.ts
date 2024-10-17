@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnChanges, OnInit, SimpleChanges } from '@angular/core';
 import { UserDashboardService } from './user-dashboard.service';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
@@ -40,7 +40,7 @@ export class UserDashboardComponent implements OnInit {
         headers: Object.keys(this.headerdsMapping).map((key) => {
           return key;
         }),
-        data: [],
+        data: this.users.length > 0 ? this.users : [],
       },
     },
   };
@@ -51,6 +51,12 @@ export class UserDashboardComponent implements OnInit {
     return this.headerdsMapping;
   }
 
+  // ngOnChanges(changes: SimpleChanges): void {
+  // if (changes['data']) {
+  // console.log('Data recibida:', this.data);
+  // }
+  // }
+
   ngOnInit(): void {
     this.getAll();
   }
@@ -60,9 +66,11 @@ export class UserDashboardComponent implements OnInit {
 
   getAll() {
     this._userDashboardService.getAll().subscribe((data: any) => {
-      console.log(data);
+      console.log('users', data);
       this.users = data;
-      this.data.content.table.data = this.users;
+      if (this.data.content && this.data.content.table) {
+        this.data.content.table.data = data;
+      }
     });
   }
 
