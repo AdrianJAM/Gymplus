@@ -12,7 +12,7 @@ export class UserDashboardService {
   constructor(private http: HttpClient) {}
 
   getAll(): Observable<User> {
-    return this.http.get(`${this.url}/users`);
+    return this.http.get<User>(`${this.url}/users`);
   }
 
   create(user: User): Observable<User> {
