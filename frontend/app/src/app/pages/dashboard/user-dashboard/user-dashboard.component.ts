@@ -31,7 +31,7 @@ export class UserDashboardComponent implements OnInit {
     description:
       'Aqui podras ver y modificar los usuarios de la aplicacion, ten cuidado modificar erroneamente alguno de los datos podria llegar a causar problemas en el servidor o cliente.',
     descriptionIcon: 'warning',
-    icon: 'settings',
+    icon: 'server',
     content: {
       table: {
         headers: Object.keys(this.headerdsMapping).map((key) => {

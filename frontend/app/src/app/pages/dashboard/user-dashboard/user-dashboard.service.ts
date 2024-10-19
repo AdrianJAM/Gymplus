@@ -11,8 +11,8 @@ export class UserDashboardService {
   private url = environment.apiUrl;
   constructor(private http: HttpClient) {}
 
-  getAll(): Observable<User> {
-    return this.http.get<User>(`${this.url}/users`);
+  getAll(): Observable<User[]> {
+    return this.http.get<User[]>(`${this.url}/users`);
   }
 
   create(user: User): Observable<User> {

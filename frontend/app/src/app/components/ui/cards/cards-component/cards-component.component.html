@@ -9,9 +9,10 @@
         (keydown.enter)="toggleChildren()"
         tabindex="0"
       >
-        <!-- <ng-container *ngIf="getIconComponent()">
-          <ng-container *ngComponentOutlet="getIconComponent()"></ng-container>
-        </ng-container> -->
+        <app-icon-loader
+          *ngIf="data.icon"
+          iconName="{{ data.icon }}"
+        ></app-icon-loader>
         <ng-container *ngIf="data.title">
           <h1 class="text-2xl font-semibold">
             {{ data.title }}
@@ -63,6 +64,10 @@
         tabindex="0"
         class="text-gray-600 text-xs flex mt-2 ml-3 gap-2 items-center w-full lg:w-3/4 select-none"
       >
+        <app-icon-loader
+          *ngIf="data.descriptionIcon"
+          iconName="{{ data.descriptionIcon }}"
+        ></app-icon-loader>
         {{ data.description }}
       </p>
     </ng-container>

@@ -4,6 +4,7 @@ import { CardData } from './cards-component.model';
 import { IconWarningComponent } from '../../../icon/icon-warning/icon-warning.component';
 import { CardsComponentContentComponent } from './cards-component-content/cards-component-content.component';
 import { CardsComponentButtonComponent } from './cards-component-button/cards-component-button.component';
+import { IconLoaderComponent } from '../../../icon/icon.component';
 
 @Component({
   selector: 'app-cards-component',
@@ -13,6 +14,7 @@ import { CardsComponentButtonComponent } from './cards-component-button/cards-co
     IconWarningComponent,
     CardsComponentContentComponent,
     CardsComponentButtonComponent,
+    IconLoaderComponent,
   ],
   templateUrl: './cards-component.component.html',
   styleUrl: './cards-component.component.css',

@@ -2,5 +2,5 @@
 
 export const environment = {
   production: true,
-  apiUrl: 'https://api.tugimnasio.com/api', // URL para producción
+  apiUrl: 'https://127.0.0.01', // URL para producción
 };
