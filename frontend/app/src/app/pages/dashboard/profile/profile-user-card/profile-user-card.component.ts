@@ -1,5 +1,5 @@
 import { Component, Input } from '@angular/core';
-import { User } from '../../user-dashboard/user-dashboard.model';
+import { Member } from './../../../../core/models/member.model';
 import { CommonModule } from '@angular/common';
 
 @Component({
@@ -10,7 +10,7 @@ import { CommonModule } from '@angular/common';
   styleUrl: './profile-user-card.component.css',
 })
 export class ProfileUserCardComponent {
-  @Input() user: User | undefined;
+  @Input() member: Member | undefined;
   isFace: boolean = false;
 
   toggleCard() {

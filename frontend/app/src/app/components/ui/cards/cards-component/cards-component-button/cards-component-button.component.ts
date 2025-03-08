@@ -15,7 +15,24 @@ export class CardsComponentButtonComponent {
 
   constructor() {}
 
-  onClick() {
-    console.log('click');
+  getStyles() {
+    const styles = {
+      primary: {
+        color: 'bg-indigo-600',
+        textcolor: 'text-white',
+        hovercolor: 'hover:bg-indigo-700',
+      },
+      secondary: {
+        color: 'bg-gray-200',
+        textcolor: 'text-gray-800',
+        hovercolor: 'hover:bg-gray-300',
+      },
+      danger: {
+        color: 'bg-red-600',
+        textcolor: 'text-white',
+        hovercolor: 'hover:bg-red-700',
+      },
+    };
+    return styles[this.data.variant || 'primary'];
   }
 }

@@ -1,0 +1,218 @@
+/* Estilos específicos para el botón de toggle */
+#toggleButton, #toggleButtonOpen {
+  background-color: rgb(73, 73, 73);
+  color: white;
+  border: none;
+  border-radius: 50px;
+  cursor: pointer;
+  font-size: 1rem;
+  font-weight: bold;
+  text-align: center;
+  position: fixed;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+#toggleButton:hover, #toggleButtonOpen:hover {
+  background-color: #1c1c1c;
+  transform: scale(1.05) translateX(5px);
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.3);
+}
+
+#toggleButton .button-content, #toggleButtonOpen .button-content {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  position: relative;
+}
+
+#toggleButton .text, #toggleButtonOpen .text {
+  position: absolute;
+  opacity: 0;
+  transform: translateX(10px);
+  transition: all 0.3s ease-in-out;
+  white-space: nowrap;
+}
+
+#toggleButton:hover .text, #toggleButtonOpen:hover .text {
+  opacity: 1;
+  transform: translateX(0);
+  position: relative;
+}
+
+#toggleButton .icon, #toggleButtonOpen .icon {
+  transition: all 0.3s ease-in-out;
+}
+
+#toggleButton:hover .icon {
+  transform: rotate(90deg);
+  margin-right: 8px;
+  opacity: 0;
+  position: absolute;
+  left: -20px;
+}
+
+#toggleButtonOpen:hover .icon {
+  transform: rotate(-90deg);
+  margin-right: 8px;
+  opacity: 0;
+  position: absolute;
+  left: -20px;
+}
+
+/* Efecto de onda al hacer clic */
+#toggleButton::after, #toggleButtonOpen::after {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 5px;
+  height: 5px;
+  background: rgba(255, 255, 255, 0.5);
+  opacity: 0;
+  border-radius: 100%;
+  transform: scale(1) translate(-50%, -50%);
+  transform-origin: 50% 50%;
+}
+
+#toggleButton:active::after, #toggleButtonOpen:active::after {
+  opacity: 1;
+  transform: scale(20) translate(-50%, -50%);
+  transition: all 0.6s ease-out;
+}
+
+/* Estilos para el botón de cierre */
+.close-button {
+  color: rgb(73, 73, 73);
+  width: 40px;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: none;
+  cursor: pointer;
+  transition: all 0.3s ease-in-out;
+  background-color: transparent;
+}
+
+.close-button:hover {
+  color: rgb(220, 38, 38);
+  background-color: rgba(220, 38, 38, 0.1);
+  transform: rotate(90deg);
+}
+
+.close-button svg {
+  width: 24px;
+  height: 24px;
+  transition: all 0.3s ease-in-out;
+}
+
+.close-button:hover svg {
+  stroke: rgb(220, 38, 38);
+  transform: scale(1.1);
+}
+/* Estilos para el título del sidebar */
+.sidebar-title {
+  font-size: 1.2rem;
+  font-weight: 700;
+  color: #333;
+  white-space: normal;
+  overflow: visible;
+  word-wrap: break-word;
+  max-width: 100%;
+  margin: 0;
+  padding: 0.5rem 0;
+  letter-spacing: 0.5px;
+}
+/* Estilos para el rol del sidebar */
+.sidebar-role {
+  font-size: 0.9rem;
+  font-weight: 500;
+  color: #666;
+  margin: 0;
+  padding: 0;
+  line-height: 1.2;
+  display: block;
+  white-space: nowrap;
+}
+/* Estilos para el contenedor principal del sidebar */
+.sidebar-container {
+  position: fixed;
+  top: 0;
+  left: 0;
+  height: 100vh;
+  z-index: 40;
+  display: flex;
+  flex-direction: column;
+  overflow-x: hidden;
+  box-shadow: 2px 0 10px rgba(0, 0, 0, 0.1);
+  transition: width 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  background-color: white;
+}
+
+/* Estilos para el contenido interno del sidebar */
+.sidebar-content {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  opacity: 1;
+  visibility: visible;
+  transition: opacity 0.2s ease-in-out;
+  width: 16rem;
+}
+.sidebar-container.closed .sidebar-content {
+  opacity: 0;
+  visibility: hidden;
+}
+
+/* Estilos para el encabezado del sidebar */
+.sidebar-header {
+  background-color: white;
+  border-bottom: 1px solid #f0f0f0;
+  z-index: 10;
+}
+.sidebar-container.closed .sidebar-content {
+  opacity: 0;
+  visibility: hidden;
+}
+
+/* Ajuste para los elementos de navegación */
+.nav-item {
+  white-space: nowrap;
+  overflow: hidden;
+}
+/* Estilos para el contenedor del título */
+.sidebar-title-container {
+  display: flex;
+  flex-direction: column;
+  max-width: 80%;
+}
+
+/* Estilos para el título principal - Corregido para evitar duplicación */
+.sidebar-title {
+  font-size: 1.3rem;
+  font-weight: 700;
+  color: #333;
+  margin: 0;
+  padding: 0;
+  line-height: 1.2;
+  white-space: nowrap;
+  overflow: visible;
+}
+
+/* Estilos para el rol */
+.sidebar-role {
+  font-size: 0.9rem;
+  font-weight: 500;
+  color: #666;
+  margin: 0;
+  padding: 0;
+  line-height: 1.2;
+  display: block;
+  white-space: nowrap;
+}

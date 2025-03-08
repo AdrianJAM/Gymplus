@@ -1,18 +1,44 @@
-<div class="fixed inset-0 flex items-center justify-center z-50">
+<div class="flex fixed inset-0 z-50 justify-center items-center">
   <div
     class="fixed inset-0 bg-black opacity-90"
-    (click)="close()"
+    (click)="cancel()"
     tabindex="0"
-    (keydown.escape)="close()"
+    (keydown.escape)="cancel()"
   ></div>
-  <div class="rounded-lg shadow-lg z-10 p-6 max-w-md w-full relative">
+  <div class="relative z-10 p-6 w-full max-w-md bg-white rounded-lg">
     <button
-      class="fixed top-4 right-4 text-2xl bg-red-500 text-white font-bold py-1 px-3 rounded"
-      (click)="close()"
-      (keydown.escape)="close()"
+      *ngIf="!hideCloseButton"
+      class="fixed top-4 right-4 px-3 py-1 text-2xl font-bold text-white bg-red-500 rounded"
+      (click)="cancel()"
+      (keydown.escape)="cancel()"
     >
       X
     </button>
+    
+    <!-- Modal Content -->
+    <div class="mb-6">
+      <h3 class="text-lg font-semibold text-gray-900" *ngIf="title">{{ title }}</h3>
+      <p class="mt-2 text-gray-600" *ngIf="message">{{ message }}</p>
+    </div>
+    
+    <!-- Modal Actions -->
+    <div class="flex justify-end gap-3">
+      <button
+        *ngIf="cancelButtonText"
+        class="px-4 py-2 text-sm font-medium text-gray-700 bg-white rounded-md border border-gray-300 shadow-sm transition-all hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+        (click)="cancel()"
+      >
+        {{ cancelButtonText }}
+      </button>
+      <button
+        *ngIf="confirmButtonText"
+        class="px-4 py-2 text-sm font-medium text-white bg-indigo-600 rounded-md border border-transparent shadow-sm transition-all hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+        (click)="confirm()"
+      >
+        {{ confirmButtonText }}
+      </button>
+    </div>
+    
     <ng-content></ng-content>
   </div>
 </div>

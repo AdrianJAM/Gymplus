@@ -6,6 +6,7 @@ export interface CardButton {
   textcolor?: string;
   hovercolor?: string;
   hovertextcolor?: string;
+  variant?: 'primary' | 'secondary' | 'danger';
   tooltip?: string;
   disabled?: boolean;
 }

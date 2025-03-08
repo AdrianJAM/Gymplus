@@ -1,20 +1,20 @@
 <ng-container *ngIf="data">
   <div
-    class="flex flex-col items-start p-5 rounded-lg justify-center w-full text-gray-800"
+    class="flex flex-col items-start justify-center w-full p-5 text-gray-800 rounded-lg"
   >
     <ng-container *ngIf="data.title">
-      <h1 class="text-sm font-bold italic select-none">{{ data.title }}</h1>
+      <h1 class="text-sm italic font-bold select-none">{{ data.title }}</h1>
     </ng-container>
     <ng-container *ngIf="data.description">
       <p
-        class="text-gray-600 text-xs flex mt-2 ml-3 gap-2 items-center w-full lg:w-3/4 select-none"
+        class="flex items-center w-full gap-2 mt-2 ml-3 text-xs text-gray-600 select-none lg:w-3/4"
       >
         {{ data.description }}
       </p>
     </ng-container>
     <ng-container *ngIf="data.isAvailable && data.isAvailable !== undefined">
       <p
-        class="text-alert-success w-full flex text-sm ml-3 items-center gap-1 select-none"
+        class="flex items-center w-full gap-1 ml-3 text-sm select-none text-alert-success"
       >
         <svg
           xmlns="http://www.w3.org/2000/svg"
@@ -37,7 +37,7 @@
     </ng-container>
     <ng-container *ngIf="!data.isAvailable && data.isAvailable !== undefined">
       <p
-        class="text-alert-error w-full flex text-sm ml-3 items-center gap-1 select-none"
+        class="flex items-center w-full gap-1 ml-3 text-sm select-none text-alert-error"
       >
         <svg
           xmlns="http://www.w3.org/2000/svg"
@@ -60,26 +60,26 @@
     </ng-container>
 
     <ng-container *ngIf="data.table">
-      <div class="overflow-y-hidden w-full p-2">
+      <div class="w-full p-2 overflow-y-hidden">
         <table
-          class="table-auto w-full bg-white border border-gray-200 shadow-lg rounded-lg text-center"
+          class="w-full text-center bg-white border border-gray-200 rounded-lg shadow-lg table-auto"
         >
           <thead class="bg-gray-200">
             <tr>
               <ng-container *ngFor="let header of data.table.headers">
                 <th
-                  class="px-4 py-2 text-center text-sm font-medium text-gray-900 uppercase tracking-wider"
+                  class="px-4 py-2 text-sm font-medium tracking-wider text-center text-gray-900 uppercase"
                 >
-                  {{ header }}
+                  {{ header.label }}
                 </th>
               </ng-container>
             </tr>
           </thead>
           <tbody>
             <tr *ngFor="let row of data.table.data">
-              <ng-container *ngFor="let headers of data.table.headers">
+              <ng-container *ngFor="let header of data.table.headers">
                 <td class="px-4 py-2 whitespace-nowrap">
-                  {{ getRowValue(row , headers) }}
+                  {{ getRowValue(row , header.key) }}
                 </td>
               </ng-container>
             </tr>
@@ -92,13 +92,13 @@
 
 <!-- <h1 *ngIf="data.title" class="text-secondary-3">{{ data.title }}</h1>
     <ng-container *ngIf="data.description">
-      <p class="text-gray-400 text-sm italic">
+      <p class="text-sm italic text-gray-400">
         {{ data.description }}
       </p>
     </ng-container>
     @if(data.isAvailable){
 
-    <p class="text-alert-success flex w-full">
+    <p class="flex w-full text-alert-success">
       <svg
         xmlns="http://www.w3.org/2000/svg"
         width="24"

@@ -1,0 +1,75 @@
+<div
+    class="fixed top-0 left-0 h-screen bg-white sidebar-container"
+    [ngClass]="{'closed': !isOpen}"
+    [ngStyle]="{'width': isOpen ? '16rem' : '0'}">
+    
+    <div class="w-64 h-full sidebar-content">
+        <!-- Logo -->
+        <div class="flex justify-between items-center px-6 py-4 bg-inherit sidebar-header">
+            <div class="sidebar-title-container">
+                <h1 class="sidebar-title">Gymplus</h1>
+                <p class="sidebar-role">{{getRolFromTitle()}}</p>
+            </div>
+            <button 
+                class="p-2 rounded-full transition-all duration-300 close-button hover:bg-red-100 group"
+                (click)="onToggle()" 
+                aria-label="Cerrar Sidebar">
+                <svg xmlns="http://www.w3.org/2000/svg" 
+                    class="w-6 h-6 transition-colors duration-300 group-hover:text-red-600" 
+                    fill="none" 
+                    viewBox="0 0 24 24" 
+                    stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+                </svg>
+            </button>
+        </div>
+
+        <!-- Menu (contenido scrollable) -->
+        <nav class="overflow-y-auto flex-1 px-4 py-2">
+            <ul>
+                <li *ngFor="let item of menuItems" class="mb-4">
+                    <a 
+                        [routerLink]="item.route"
+                        routerLinkActive="bg-gray-700 text-white"
+                        class="flex items-center p-2 text-base font-medium text-gray-800 rounded transition duration-300 ease-in-out hover:bg-gray-700 hover:text-white"
+                    >
+                        <span>{{item.icon}}</span>
+                        <span class="ml-2 whitespace-nowrap">{{item.label}}</span>
+                    </a>
+                </li>
+            </ul>
+        </nav>
+    </div>
+</div>
+
+<!-- Toggle button -->
+<button
+  id="toggleButton"
+  *ngIf="!isOpen"
+  mat-fab
+  matTooltip="Abrir menú"
+  @toggleButton
+  class="flex fixed top-2 left-2 z-50 justify-center items-center w-10 h-10 rounded-full shadow-lg transition-all duration-300 ease-in-out hover:w-24"
+  (click)="onToggle()">
+  
+  <div class="flex justify-center items-center w-full button-content">
+    <mat-icon class="text-sm text-white icon">menu</mat-icon>
+    <span class="ml-1 text-xs font-medium text-white text">MENÚ</span>
+  </div>
+</button>
+
+<!-- New toggle button that appears when sidebar is open -->
+<button
+  id="toggleButtonOpen"
+  *ngIf="isOpen && isLargeScreen"
+  mat-fab
+  matTooltip="Cerrar menú"
+  @toggleButton
+  class="flex fixed top-2 left-[17rem] z-50 justify-center items-center w-10 h-10 rounded-full shadow-lg transition-all duration-300 ease-in-out hover:w-24"
+  (click)="onToggle()">
+  
+  <div class="flex justify-center items-center w-full button-content">
+    <mat-icon class="text-sm text-white icon">menu_open</mat-icon>
+    <span class="ml-1 text-xs font-medium text-white text">CERRAR</span>
+  </div>
+</button>

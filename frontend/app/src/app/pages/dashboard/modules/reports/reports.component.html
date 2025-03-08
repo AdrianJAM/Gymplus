@@ -1,0 +1,189 @@
+<div class="reports-container">
+  <h1 class="reports-title">Gym Reports Dashboard</h1>
+
+  <div class="date-filter-section">
+    <mat-card>
+      <mat-card-header>
+        <mat-card-title>Filter Reports</mat-card-title>
+      </mat-card-header>
+      <mat-card-content>
+        <div class="date-range-picker">
+          <mat-form-field appearance="outline">
+            <mat-label>Start Date</mat-label>
+            <input matInput [matDatepicker]="startPicker" [(ngModel)]="startDate">
+            <mat-datepicker-toggle matSuffix [for]="startPicker"></mat-datepicker-toggle>
+            <mat-datepicker #startPicker></mat-datepicker>
+          </mat-form-field>
+
+          <mat-form-field appearance="outline">
+            <mat-label>End Date</mat-label>
+            <input matInput [matDatepicker]="endPicker" [(ngModel)]="endDate">
+            <mat-datepicker-toggle matSuffix [for]="endPicker"></mat-datepicker-toggle>
+            <mat-datepicker #endPicker></mat-datepicker>
+          </mat-form-field>
+
+          <button mat-raised-button color="primary" (click)="generateReport()">Generate Report</button>
+        </div>
+      </mat-card-content>
+    </mat-card>
+  </div>
+
+  <div class="reports-grid">
+    <!-- Membership Statistics -->
+    <mat-card class="report-card">
+      <mat-card-header>
+        <mat-card-title>Membership Statistics</mat-card-title>
+      </mat-card-header>
+      <mat-card-content>
+        <table mat-table [dataSource]="membershipStats" class="mat-elevation-z2">
+          <!-- Type Column -->
+          <ng-container matColumnDef="type">
+            <th mat-header-cell *matHeaderCellDef>Membership Type</th>
+            <td mat-cell *matCellDef="let element">{{element.type}}</td>
+          </ng-container>
+
+          <!-- Active Column -->
+          <ng-container matColumnDef="active">
+            <th mat-header-cell *matHeaderCellDef>Active</th>
+            <td mat-cell *matCellDef="let element">{{element.active}}</td>
+          </ng-container>
+
+          <!-- Expired Column -->
+          <ng-container matColumnDef="expired">
+            <th mat-header-cell *matHeaderCellDef>Expired</th>
+            <td mat-cell *matCellDef="let element">{{element.expired}}</td>
+          </ng-container>
+
+          <!-- Revenue Column -->
+          <ng-container matColumnDef="revenue">
+            <th mat-header-cell *matHeaderCellDef>Revenue ($)</th>
+            <td mat-cell *matCellDef="let element">{{element.revenue | currency}}</td>
+          </ng-container>
+
+          <tr mat-header-row *matHeaderRowDef="displayedMembershipColumns"></tr>
+          <tr mat-row *matRowDef="let row; columns: displayedMembershipColumns;"></tr>
+        </table>
+
+        <div class="summary-section">
+          <div class="summary-item">
+            <h3>Total Active Members</h3>
+            <p class="summary-value">301</p>
+          </div>
+          <div class="summary-item">
+            <h3>Total Revenue</h3>
+            <p class="summary-value">$35,360</p>
+          </div>
+        </div>
+      </mat-card-content>
+    </mat-card>
+
+    <!-- Attendance Data -->
+    <mat-card class="report-card">
+      <mat-card-header>
+        <mat-card-title>Daily Attendance</mat-card-title>
+      </mat-card-header>
+      <mat-card-content>
+        <table mat-table [dataSource]="attendanceData" class="mat-elevation-z2">
+          <!-- Date Column -->
+          <ng-container matColumnDef="date">
+            <th mat-header-cell *matHeaderCellDef>Date</th>
+            <td mat-cell *matCellDef="let element">{{element.date | date}}</td>
+          </ng-container>
+
+          <!-- Count Column -->
+          <ng-container matColumnDef="count">
+            <th mat-header-cell *matHeaderCellDef>Visitors</th>
+            <td mat-cell *matCellDef="let element">{{element.count}}</td>
+          </ng-container>
+
+          <!-- Peak Hour Column -->
+          <ng-container matColumnDef="peak_hour">
+            <th mat-header-cell *matHeaderCellDef>Peak Hour</th>
+            <td mat-cell *matCellDef="let element">{{element.peak_hour}}</td>
+          </ng-container>
+
+          <tr mat-header-row *matHeaderRowDef="displayedAttendanceColumns"></tr>
+          <tr mat-row *matRowDef="let row; columns: displayedAttendanceColumns;"></tr>
+        </table>
+
+        <div class="summary-section">
+          <div class="summary-item">
+            <h3>Average Daily Attendance</h3>
+            <p class="summary-value">91</p>
+          </div>
+          <div class="summary-item">
+            <h3>Most Popular Time</h3>
+            <p class="summary-value">18:00 - 19:00</p>
+          </div>
+        </div>
+      </mat-card-content>
+    </mat-card>
+
+    <!-- Additional Reports -->
+    <mat-card class="report-card">
+      <mat-card-header>
+        <mat-card-title>Popular Equipment</mat-card-title>
+      </mat-card-header>
+      <mat-card-content>
+        <div class="equipment-stats">
+          <div class="equipment-item">
+            <h3>Treadmills</h3>
+            <p class="usage-percent">87%</p>
+            <p class="usage-label">Usage Rate</p>
+          </div>
+          <div class="equipment-item">
+            <h3>Bench Press</h3>
+            <p class="usage-percent">76%</p>
+            <p class="usage-label">Usage Rate</p>
+          </div>
+          <div class="equipment-item">
+            <h3>Squat Racks</h3>
+            <p class="usage-percent">82%</p>
+            <p class="usage-label">Usage Rate</p>
+          </div>
+          <div class="equipment-item">
+            <h3>Ellipticals</h3>
+            <p class="usage-percent">65%</p>
+            <p class="usage-label">Usage Rate</p>
+          </div>
+        </div>
+      </mat-card-content>
+    </mat-card>
+
+    <!-- Revenue Trends -->
+    <mat-card class="report-card">
+      <mat-card-header>
+        <mat-card-title>Revenue Breakdown</mat-card-title>
+      </mat-card-header>
+      <mat-card-content>
+        <div class="revenue-breakdown">
+          <div class="revenue-item">
+            <h3>Memberships</h3>
+            <p class="revenue-percent">75%</p>
+            <p class="revenue-amount">$26,520</p>
+          </div>
+          <div class="revenue-item">
+            <h3>Personal Training</h3>
+            <p class="revenue-percent">15%</p>
+            <p class="revenue-amount">$5,304</p>
+          </div>
+          <div class="revenue-item">
+            <h3>Supplements</h3>
+            <p class="revenue-percent">7%</p>
+            <p class="revenue-amount">$2,475</p>
+          </div>
+          <div class="revenue-item">
+            <h3>Apparel</h3>
+            <p class="revenue-percent">3%</p>
+            <p class="revenue-amount">$1,061</p>
+          </div>
+        </div>
+      </mat-card-content>
+    </mat-card>
+  </div>
+
+  <div class="export-section">
+    <button mat-raised-button color="accent">Export to PDF</button>
+    <button mat-raised-button color="accent">Export to Excel</button>
+  </div>
+</div>

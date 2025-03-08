@@ -1,28 +1,28 @@
 <div
-  class="border border-gray-300 rounded-lg p-4 w-full max-w-xs mx-auto bg-primary py-5 shadow-md"
+  class="w-full max-w-xs p-4 py-5 mx-auto border border-gray-300 rounded-lg shadow-md bg-primary"
 >
-  @if(user){
+  @if(member){
   <!-- card.component.html -->
-  <div class="max-w-xs mx-auto perspective mb-5">
+  <div class="max-w-xs mx-auto mb-5 perspective">
     <button
       (click)="toggleCard()"
-      class=" bg-blue-500 text-white rounded p-2"
+      class="p-2 text-white bg-blue-500 rounded "
     >
       Mostrar {{ isFace ? "Trasero" : "Frente" }}
     </button>
     <div
-      class="transition-transform duration-500 ease-in-out h-40 w-auto transform"
+      class="w-auto h-40 transition-transform duration-500 ease-in-out transform"
       [ngClass]="{ 'rotate-y-180': !isFace }"
     >
       <!-- Cara de la tarjeta -->
       <div
-        class="border border-gray-300 rounded-lg p-4 w-full bg-white shadow-md"
+        class="w-full p-4 bg-white border border-gray-300 rounded-lg shadow-md"
       >
         @if(isFace){
 
         <div class="flex flex-col items-center">
-          <h2 class="text-lg font-bold text-center">{{ user.name }}</h2>
-          <p class="text-gray-600 text-center">{{ user.email }}</p>
+          <h2 class="text-lg font-bold text-center">{{ member.name }}</h2>
+          <p class="text-center text-gray-600">{{ member.email }}</p>
           <div class="mt-4">
             <img src="assets/employee-2.png" alt="Logo" class="h-16 mb-2" />
           </div>
@@ -30,7 +30,7 @@
         } @if(!isFace){
         <div class="flex flex-col items-center rotate-y-180">
           <h2 class="text-lg font-bold text-center">Back Side</h2>
-          <p class="text-gray-600 text-center">This is the back of the card.</p>
+          <p class="text-center text-gray-600">This is the back of the card.</p>
           <div class="mt-4">
             <img src="assets/employee-2.png" alt="Logo" class="h-16 mb-2" />
           </div>

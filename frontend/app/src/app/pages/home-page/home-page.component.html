@@ -1,100 +1,214 @@
-<!-- Header -->
-<header class="bg-gray-800 text-white">
-  <div class="container mx-auto flex justify-between items-center p-5">
-    <h1 class="text-3xl font-bold">Gimnasio FitLife</h1>
-    <nav>
-      <ul class="flex space-x-5">
-        <li><a href="/dashboard" class="hover:text-gray-400">Admin</a></li>
-      </ul>
-    </nav>
-  </div>
-</header>
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gimnasio Mparde - Transforma tu Cuerpo, Eleva tu Mente</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Poppins', sans-serif;
+        }
+        .bg-gradient {
+            background: linear-gradient(135deg, #ff6b6b, #feca57);
+        }
+        .text-gradient {
+            background: linear-gradient(135deg, #ff6b6b, #feca57);
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        .hover-grow {
+            transition: transform 0.3s ease;
+        }
+        .hover-grow:hover {
+            transform: scale(1.05);
+        }
+        .animate-fade-in {
+            animation: fadeIn 1s ease-out;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+        .animate-slide-up {
+            animation: slideUp 0.8s ease-out;
+        }
+        @keyframes slideUp {
+            from { transform: translateY(50px); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
+        html {
+            scroll-behavior: smooth;
+        }
+        section[id] {
+            scroll-margin-top: 80px;
+        }
+    </style>
+</head>
+<body class="font-sans bg-gray-100">
+    <!-- Header -->
+    <header class="fixed z-20 w-full bg-white shadow-md">
+        <div class="container flex items-center justify-between p-4 mx-auto">
+            <h1 class="text-3xl font-bold text-gradient">Mparde Gym</h1>
+            <nav class="hidden md:block">
+                <ul class="flex space-x-6">
+                    <li><a href="#about" class="text-gray-700 transition duration-300 hover:text-orange-500">Sobre Nosotros</a></li>
+                    <li><a href="#classes" class="text-gray-700 transition duration-300 hover:text-orange-500">Clases</a></li>
+                    <li><a href="#memberships" class="text-gray-700 transition duration-300 hover:text-orange-500">Membresías</a></li>
+                    <li><a href="#contact" class="text-gray-700 transition duration-300 hover:text-orange-500">Contacto</a></li>
+                </ul>
+            </nav>
+            <a href="#contact" class="px-4 py-2 font-semibold text-white transition duration-300 rounded-full bg-gradient hover:shadow-lg">Únete Ahora</a>
+        </div>
+    </header>
 
-<!-- Hero Section -->
-<section
-  class="bg-cover bg-center h-screen"
-  style="background-image: url('https://source.unsplash.com/1600x900/?gym')"
->
-  <div class="flex items-center justify-center h-full bg-black bg-opacity-50">
-    <h2 class="text-white text-5xl font-bold">Transforma tu Cuerpo</h2>
-  </div>
-</section>
+    <!-- Hero Section -->
+    <section class="relative flex items-center h-screen bg-center bg-cover" style="background-image: url('../../../assets/images/gym-01.jpg')">
+        <div class="absolute inset-0 bg-black opacity-40"></div>
+        <div class="container relative z-10 px-4 mx-auto text-center">
+            <h2 class="mb-4 text-5xl font-bold text-gray-700 md:text-7xl animate-fade-in">Transforma tu Vida</h2>
+            <p class="mb-8 text-xl text-yellow-300 md:text-2xl animate-slide-up">Descubre tu potencial en Mparde Gym</p>
+            <a href="#memberships" class="px-8 py-3 text-lg font-bold text-orange-500 transition duration-300 bg-gray-300 rounded-full hover:bg-orange-500 hover:text-white animate-slide-up">Comienza Hoy</a>
+        </div>
+    </section>
 
-<!-- Services Section -->
-<section id="services" class="py-20">
-  <div class="container mx-auto text-center">
-    <h2 class="text-4xl font-bold mb-10">Nuestros Servicios</h2>
-    <div class="grid grid-cols-1 md:grid-cols-3 gap-10">
-      <div class="bg-white rounded-lg shadow-lg p-5">
-        <h3 class="text-xl font-bold mb-2">Entrenamiento Personalizado</h3>
-        <p>Entrenadores expertos que te ayudarán a alcanzar tus objetivos.</p>
-      </div>
-      <div class="bg-white rounded-lg shadow-lg p-5">
-        <h3 class="text-xl font-bold mb-2">Clases Grupales</h3>
-        <p>Participa en nuestras emocionantes clases de grupo.</p>
-      </div>
-      <div class="bg-white rounded-lg shadow-lg p-5">
-        <h3 class="text-xl font-bold mb-2">Nutrición y Salud</h3>
-        <p>Asesoría nutricional para un estilo de vida saludable.</p>
-      </div>
-    </div>
-  </div>
-</section>
+    <!-- About Section -->
+    <section id="about" class="py-20">
+        <div class="container px-4 mx-auto text-center">
+            <h2 class="mb-10 text-4xl font-bold text-gradient">Sobre Mparde Gym</h2>
+            <div class="grid grid-cols-1 gap-10 md:grid-cols-3">
+                <div class="p-6 bg-white rounded-lg shadow-lg hover-grow">
+                    <h3 class="mb-4 text-2xl font-semibold text-orange-500">Instalaciones de Élite</h3>
+                    <p class="text-gray-600">Equipamiento de última generación distribuido en 3 pisos para una experiencia fitness completa.</p>
+                </div>
+                <div class="p-6 bg-white rounded-lg shadow-lg hover-grow">
+                    <h3 class="mb-4 text-2xl font-semibold text-orange-500">Entrenadores Expertos</h3>
+                    <p class="text-gray-600">Nuestro equipo de profesionales certificados te guiará en cada paso de tu viaje fitness.</p>
+                </div>
+                <div class="p-6 bg-white rounded-lg shadow-lg hover-grow">
+                    <h3 class="mb-4 text-2xl font-semibold text-orange-500">Comunidad Vibrante</h3>
+                    <p class="text-gray-600">Únete a una comunidad motivada y solidaria que te inspirará a alcanzar tus metas.</p>
+                </div>
+            </div>
+        </div>
+    </section>
 
-<!-- Testimonials Section -->
-<section id="testimonials" class="bg-gray-200 py-20">
-  <div class="container mx-auto text-center">
-    <h2 class="text-4xl font-bold mb-10">Lo Que Dicen Nuestros Clientes</h2>
-    <div class="flex flex-col md:flex-row md:justify-center">
-      <div class="bg-white rounded-lg shadow-lg p-5 m-5">
-        <p>"El mejor gimnasio de la ciudad. ¡Me encanta!"</p>
-        <p class="font-bold mt-2">- Juan Pérez</p>
-      </div>
-      <div class="bg-white rounded-lg shadow-lg p-5 m-5">
-        <p>"Entrenadores muy profesionales y motivadores."</p>
-        <p class="font-bold mt-2">- Ana Gómez</p>
-      </div>
-      <div class="bg-white rounded-lg shadow-lg p-5 m-5">
-        <p>"Ambiente increíble y excelentes instalaciones."</p>
-        <p class="font-bold mt-2">- Luis Martínez</p>
-      </div>
-    </div>
-  </div>
-</section>
+    <!-- Classes Section -->
+    <section id="classes" class="py-20 bg-gray-100">
+        <div class="container px-4 mx-auto text-center">
+            <h2 class="mb-10 text-4xl font-bold text-gradient">Nuestras Clases</h2>
+            <div class="grid grid-cols-1 gap-8 md:grid-cols-3">
+                <div class="overflow-hidden bg-white rounded-lg shadow-lg hover-grow">
+                    <img src="../../../assets/images/yoga-01.jpg" alt="Yoga" class="object-cover w-full h-48">
+                    <div class="p-6">
+                        <h3 class="mb-2 text-xl font-bold text-orange-500">Yoga</h3>
+                        <p class="text-gray-600">Encuentra tu equilibrio interior y mejora tu flexibilidad.</p>
+                    </div>
+                </div>
+                <div class="overflow-hidden bg-white rounded-lg shadow-lg hover-grow">
+                    <img src="../../../assets/images/spinning-01.jpg" alt="Spinning" class="object-cover w-full h-48">
+                    <div class="p-6">
+                        <h3 class="mb-2 text-xl font-bold text-orange-500">Spinning</h3>
+                        <p class="text-gray-600">Pedalea hacia tus objetivos con nuestras clases de alta energía.</p>
+                    </div>
+                </div>
+                <div class="overflow-hidden bg-white rounded-lg shadow-lg hover-grow">
+                    <img src="../../../assets/images/fuerza-01.jpg" alt="Fuerza" class="object-cover w-full h-48">
+                    <div class="p-6">
+                        <h3 class="mb-2 text-xl font-bold text-orange-500">Fuerza</h3>
+                        <p class="text-gray-600">Construye músculo y aumenta tu resistencia con nuestro programa de fuerza.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
 
-<!-- Contact Section -->
-<section id="contact" class="py-20">
-  <div class="container mx-auto text-center">
-    <h2 class="text-4xl font-bold mb-10">Contacto</h2>
-    <form action="#" method="POST" class="max-w-md mx-auto">
-      <input
-        type="text"
-        placeholder="Nombre"
-        class="border rounded-lg p-2 mb-4 w-full"
-        required
-      />
-      <input
-        type="email"
-        placeholder="Correo Electrónico"
-        class="border rounded-lg p-2 mb-4 w-full"
-        required
-      />
-      <textarea
-        placeholder="Mensaje"
-        class="border rounded-lg p-2 mb-4 w-full"
-        rows="4"
-        required
-      ></textarea>
-      <button type="submit" class="bg-gray-800 text-white rounded-lg py-2 px-4">
-        Enviar
-      </button>
-    </form>
-  </div>
-</section>
+    <!-- Memberships Section -->
+    <section id="memberships" class="py-20 pt-32">
+        <div class="container px-4 mx-auto text-center">
+            <h2 class="mb-10 text-4xl font-bold text-gradient">Elige tu Plan</h2>
+            <div class="grid grid-cols-1 gap-8 md:grid-cols-3">
+                <div class="p-8 bg-white rounded-lg shadow-lg hover-grow">
+                    <h3 class="mb-4 text-2xl font-bold text-orange-500">Básico</h3>
+                    <p class="mb-6 text-4xl font-bold">Bs. 99.99<span class="text-sm font-normal">/mes</span></p>
+                    <ul class="mb-8 text-left">
+                        <li class="mb-2">✓ Acceso a equipos de gimnasio</li>
+                        <li class="mb-2">✓ Clases grupales limitadas</li>
+                        <li>✓ Horario: 5 AM - 11 PM</li>
+                    </ul>
+                    <a href="#contact" class="inline-block px-6 py-2 font-bold text-white transition duration-300 rounded-full bg-gradient hover:shadow-lg">Elegir Plan</a>
+                </div>
+                <div class="p-8 transform scale-105 bg-white rounded-lg shadow-lg hover-grow">
+                    <div class="inline-block px-4 py-1 mb-4 text-sm font-bold text-white bg-yellow-400 rounded-full">POPULAR</div>
+                    <h3 class="mb-4 text-2xl font-bold text-orange-500">Premium</h3>
+                    <p class="mb-6 text-4xl font-bold">Bs. 149.99<span class="text-sm font-normal">/mes</span></p>
+                    <ul class="mb-8 text-left">
+                        <li class="mb-2">✓ Acceso ilimitado 24/7</li>
+                        <li class="mb-2">✓ Todas las clases incluidas</li>
+                        <li class="mb-2">✓ 1 sesión PT mensual</li>
+                        <li>✓ Acceso a área de recuperación</li>
+                    </ul>
+                    <a href="#contact" class="inline-block px-6 py-2 font-bold text-white transition duration-300 rounded-full bg-gradient hover:shadow-lg">Elegir Plan</a>
+                </div>
+                <div class="p-8 bg-white rounded-lg shadow-lg hover-grow">
+                    <h3 class="mb-4 text-2xl font-bold text-orange-500">Familiar</h3>
+                    <p class="mb-6 text-4xl font-bold">Bs. 199.99<span class="text-sm font-normal">/mes</span></p>
+                    <ul class="mb-8 text-left">
+                        <li class="mb-2">✓ Acceso para 2 adultos y 2 niños</li>
+                        <li class="mb-2">✓ Todas las clases incluidas</li>
+                        <li class="mb-2">✓ Acceso a área infantil</li>
+                        <li>✓ Descuentos en servicios adicionales</li>
+                    </ul>
+                    <a href="#contact" class="inline-block px-6 py-2 font-bold text-white transition duration-300 rounded-full bg-gradient hover:shadow-lg">Elegir Plan</a>
+                </div>
+            </div>
+        </div>
+    </section>
 
-<!-- Footer -->
-<footer class="bg-gray-800 text-white py-5">
-  <div class="container mx-auto text-center">
-    <p>&copy; 2024 Gimnasio FitLife. Todos los derechos reservados.</p>
-  </div>
-</footer>
+    <!-- Contact Section -->
+    <section id="contact" class="py-20 bg-gray-100">
+        <div class="container px-4 mx-auto">
+            <h2 class="mb-10 text-4xl font-bold text-center text-gradient">Contáctanos</h2>
+            <div class="grid grid-cols-1 gap-10 md:grid-cols-2">
+                <div>
+                    <form class="p-8 bg-white rounded-lg shadow-lg">
+                        <div class="mb-4">
+                            <input type="text" placeholder="Nombre" class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:border-orange-500" required>
+                        </div>
+                        <div class="mb-4">
+                            <input type="email" placeholder="Correo Electrónico" class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:border-orange-500" required>
+                        </div>
+                        <div class="mb-4">
+                            <textarea placeholder="Mensaje" rows="4" class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:border-orange-500" required></textarea>
+                        </div>
+                        <button type="submit" class="w-full px-4 py-2 font-bold text-white transition duration-300 rounded-lg bg-gradient hover:shadow-lg">Enviar Mensaje</button>
+                    </form>
+                </div>
+                <div class="text-center md:text-left">
+                    <h3 class="mb-4 text-2xl font-semibold text-orange-500">Información de Contacto</h3>
+                    <p class="mb-2">📞 +591 78092462</p>
+                    <p class="mb-4">✉️ usbdymo&#64;gmail.com</p>
+                    <h3 class="mb-4 text-2xl font-semibold text-orange-500">Ubicación</h3>
+                    <p class="mb-4">C/ Las palmas #144, Z/ Ucebol. B/ 7 de septiembre, Santa Cruz - Bolivia</p>
+                    <div class="relative w-full overflow-hidden" style="padding-top: 56.25%;">
+                        <iframe src="https://www.google.com/maps/embed?pb=!1m17!1m12!1m3!1d3800.316545582687!2d-63.172408!3d-17.729718!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m2!1m1!2zMTfCsDQzJzQ3LjAiUyA2M8KwMTAnMjAuNyJX!5e0!3m2!1ses-419!2sbo!4v1735572783273!5m2!1ses-419!2sbo" width="600" height="200" style="border:0; position: absolute; top: 0; left: 0; width: 100%; height: 100%;" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="py-8 text-white bg-gray-800">
+        <div class="container mx-auto text-center">
+            <p>&copy; 2024 Mparde Gyme. Todos los derechos reservados.</p>
+            <div class="mt-4">
+                <a href="#" class="mx-2 text-gray-400 hover:text-white">Términos y Condiciones</a>
+                <a href="#" class="mx-2 text-gray-400 hover:text-white">Política de Privacidad</a>
+            </div>
+        </div>
+    </footer>
+</body>
+</html>

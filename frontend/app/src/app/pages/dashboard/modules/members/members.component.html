@@ -1,0 +1,321 @@
+<!-- src/app/components/member/member.component.html -->
+<div class="container flex flex-col mx-auto h-full">
+    <div class="flex flex-col rounded-lg border shadow-sm bg-card text-card-foreground">
+      <!-- Sección fija (encabezado y buscador) -->
+      <div class="sticky top-0 z-20 bg-white border-b">
+        <div class="p-6">
+          <!-- Encabezado mejorado -->
+          <div class="header-container">
+            <div class="title-section">
+              <h2>Gestión de Miembros</h2>
+              <p>Administra los miembros del gimnasio, sus datos y membresías</p>
+            </div>
+            <div class="button-group">
+              <button class="action-button primary-button" (click)="exportToExcel()">
+                <span class="button-icon">📊</span>
+                Exportar a Excel
+              </button>
+              <button class="action-button secondary-button" (click)="setCreating()">
+                <span class="button-icon">➕</span>
+                Nuevo Miembro
+              </button>
+            </div>
+          </div>
+    
+          <!-- Mejora de la barra de búsqueda -->
+          <div class="flex gap-4 items-center mt-6">
+            <div class="relative flex-1">
+              <span class="flex absolute inset-y-0 left-0 items-center pl-3 text-gray-500">
+                🔍
+              </span>
+              <input
+                type="text"
+                [(ngModel)]="searchQuery"
+                placeholder="Buscar por nombre, CI o teléfono..."
+                class="py-2.5 pr-4 pl-10 w-full rounded-lg border border-gray-300 transition-colors duration-200 focus:ring-indigo-500 focus:border-indigo-500"
+              />
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Contenido scrollable -->
+      <div class="overflow-y-auto flex-1">
+        <div class="p-6 pt-0">
+          <!-- Tabla -->
+          <app-cards-component-table
+            [headers]="tableHeaders"
+            [data]="filteredMembers"
+            (onEdit)="editMember($event)"
+            (onDelete)="deleteMember($event)"
+          ></app-cards-component-table>
+        </div>
+      </div>
+    </div>
+  </div>
+  
+  <!-- Modal de fondo (compartido para crear y editar) -->
+  <div class="overflow-y-auto fixed inset-0 z-40 bg-black bg-opacity-80 transition-opacity duration-300 ease-in-out"
+    [ngClass]="{'opacity-100 pointer-events-auto': isCreating || isEditing, 'opacity-0 pointer-events-none': !isCreating && !isEditing}"
+    (click)="closeModals()">
+  </div>
+  <!-- Modal de Nuevo Miembro -->
+  <form 
+    *ngIf="isCreating"
+    class="fixed z-50 w-[95%] max-w-2xl mx-auto left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 bg-white rounded-lg shadow-xl transition-all duration-300"
+    [ngClass]="{'opacity-100 scale-100': isCreating, 'opacity-0 scale-95 pointer-events-none': !isCreating}"
+    (submit)="create()"
+    (click)="$event.stopPropagation()"
+  >
+    <div class="p-6">
+      <!-- Encabezado del formulario -->
+      <div class="flex justify-between items-center pb-3 mb-6 border-b">
+        <h2 class="text-xl font-bold text-gray-800">Nuevo Miembro</h2>
+      </div>
+  
+      <!-- Contenido del formulario -->
+      <div class="space-y-4">
+        <!-- Nombre completo -->
+        <div>
+          <label class="block mb-1 text-sm font-medium text-gray-700">Nombre completo</label>
+          <input
+            type="text"
+            placeholder="Ej: Juan Pérez"
+            name="name"
+            [(ngModel)]="member.name"
+            class="p-2.5 w-full rounded-md border border-gray-300 transition-colors focus:ring-indigo-500 focus:border-indigo-500"
+          />
+        </div>
+  
+        <!-- CI y Teléfono en la misma fila -->
+        <div class="grid grid-cols-2 gap-4">
+          <div>
+            <label class="block mb-1 text-sm font-medium text-gray-700">Cédula de Identidad</label>
+            <input
+              type="text"
+              placeholder="Ej: 1234567"
+              name="ci"
+              [(ngModel)]="member.ci"
+              class="p-2.5 w-full rounded-md border border-gray-300 transition-colors focus:ring-indigo-500 focus:border-indigo-500"
+            />
+          </div>
+          <div>
+            <label class="block mb-1 text-sm font-medium text-gray-700">Teléfono</label>
+            <input
+              type="tel"
+              placeholder="Ej: 555-0123"
+              name="phone"
+              [(ngModel)]="member.phone"
+              class="p-2.5 w-full rounded-md border border-gray-300 transition-colors focus:ring-indigo-500 focus:border-indigo-500"
+            />
+          </div>
+        </div>
+  
+        <!-- Email -->
+        <div>
+          <label class="block mb-1 text-sm font-medium text-gray-700">Correo electrónico</label>
+          <input
+            type="email"
+            placeholder="ejemplo@correo.com"
+            name="email"
+            [(ngModel)]="member.email"
+            class="p-2.5 w-full rounded-md border border-gray-300 transition-colors focus:ring-indigo-500 focus:border-indigo-500"
+          />
+        </div>
+  
+        <!-- Plan y Estado en la misma fila -->
+        <div class="grid grid-cols-2 gap-4">
+          <div>
+            <label class="block mb-1 text-sm font-medium text-gray-700">Plan de membresía</label>
+            <select
+              name="membershipType"
+              [(ngModel)]="member.membershipType"
+              class="p-2.5 w-full bg-white rounded-md border border-gray-300 transition-colors focus:ring-indigo-500 focus:border-indigo-500"
+            >
+              <option value="" disabled selected>Selecciona un plan</option>
+              <option value="Premium">Premium</option>
+              <option value="Básico">Básico</option>
+            </select>
+          </div>
+          <div>
+            <label class="block mb-1 text-sm font-medium text-gray-700">Estado</label>
+            <div class="flex gap-4 mt-2">
+              <label class="inline-flex items-center">
+                <input
+                  type="radio"
+                  name="status"
+                  value="active"
+                  [(ngModel)]="member.status"
+                  class="w-4 h-4 text-indigo-600 form-radio"
+                />
+                <span class="ml-2 text-sm text-gray-700">Activo</span>
+              </label>
+              <label class="inline-flex items-center">
+                <input
+                  type="radio"
+                  name="status"
+                  value="inactive"
+                  [(ngModel)]="member.status"
+                  class="w-4 h-4 text-indigo-600 form-radio"
+                />
+                <span class="ml-2 text-sm text-gray-700">Inactivo</span>
+              </label>
+            </div>
+          </div>
+        </div>
+      </div>
+  
+      <!-- Botones de acción -->
+      <div class="flex gap-3 justify-end pt-4 mt-6 border-t">
+        <button 
+          type="button"
+          (click)="isCreating = false"
+          class="px-4 py-2 text-sm font-medium text-gray-700 bg-white rounded-md border border-gray-300 shadow-sm transition-all hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+        >
+          Cancelar
+        </button>
+        <button 
+          type="submit"
+          class="px-4 py-2 text-sm font-medium text-white bg-indigo-600 rounded-md border border-transparent shadow-sm transition-all hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+        >
+          Guardar
+        </button>
+      </div>
+    </div>
+  </form>
+  
+  <!-- Formulario Modal para Editar -->
+  <form 
+    *ngIf="isEditing"
+    class="fixed z-50 w-[95%] max-w-2xl mx-auto left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 bg-white rounded-lg shadow-xl transition-all duration-300"
+    [ngClass]="{'opacity-100 scale-100': isEditing, 'opacity-0 scale-95 pointer-events-none': !isEditing}"
+    (submit)="updateMember()"
+    (click)="$event.stopPropagation()"
+  >
+    <div class="p-6">
+      <!-- Encabezado del formulario con mejor estilo -->
+      <div class="flex justify-between items-center pb-3 mb-6 border-b">
+        <h2 class="text-xl font-bold text-gray-800">Editar Miembro</h2>
+      </div>
+  
+      <!-- Contenido del formulario mejorado -->
+      <div class="space-y-4">
+        <!-- Nombre completo -->
+        <div>
+          <label class="block mb-1 text-sm font-medium text-gray-700">Nombre completo</label>
+          <input
+            type="text"
+            placeholder="Ej: Juan Pérez"
+            name="name"
+            [(ngModel)]="editingMember.name"
+            class="p-2.5 w-full rounded-md border border-gray-300 transition-colors focus:ring-indigo-500 focus:border-indigo-500"
+          />
+        </div>
+  
+        <!-- CI y Teléfono en la misma fila -->
+        <div class="grid grid-cols-2 gap-4">
+          <div>
+            <label class="block mb-1 text-sm font-medium text-gray-700">Cédula de Identidad</label>
+            <input
+              type="text"
+              placeholder="Ej: 1234567"
+              name="ci"
+              [(ngModel)]="editingMember.ci"
+              class="p-2.5 w-full rounded-md border border-gray-300 transition-colors focus:ring-indigo-500 focus:border-indigo-500"
+            />
+          </div>
+          <div>
+            <label class="block mb-1 text-sm font-medium text-gray-700">Teléfono</label>
+            <input
+              type="tel"
+              placeholder="Ej: 555-0123"
+              name="phone"
+              [(ngModel)]="editingMember.phone"
+              class="p-2.5 w-full rounded-md border border-gray-300 transition-colors focus:ring-indigo-500 focus:border-indigo-500"
+            />
+          </div>
+        </div>
+  
+        <!-- Email -->
+        <div>
+          <label class="block mb-1 text-sm font-medium text-gray-700">Correo electrónico</label>
+          <input
+            type="email"
+            placeholder="ejemplo@correo.com"
+            name="email"
+            [(ngModel)]="editingMember.email"
+            class="p-2.5 w-full rounded-md border border-gray-300 transition-colors focus:ring-indigo-500 focus:border-indigo-500"
+          />
+        </div>
+  
+        <!-- Plan/Membresía y Estado en la misma fila -->
+        <div class="grid grid-cols-2 gap-4">
+          <div>
+            <label class="block mb-1 text-sm font-medium text-gray-700">Plan de membresía</label>
+            <select
+              name="membershipType"
+              [(ngModel)]="editingMember.membershipType"
+              class="p-2.5 w-full bg-white rounded-md border border-gray-300 transition-colors focus:ring-indigo-500 focus:border-indigo-500"
+            >
+              <option value="" disabled>Selecciona un plan</option>
+              <option value="Premium">Premium</option>
+              <option value="Básico">Básico</option>
+            </select>
+          </div>
+          <div>
+            <label class="block mb-1 text-sm font-medium text-gray-700">Estado</label>
+            <div class="flex gap-4 mt-2">
+              <label class="inline-flex items-center">
+                <input
+                  type="radio"
+                  name="editStatus"
+                  value="active"
+                  [(ngModel)]="editingMember.status"
+                  class="w-4 h-4 text-indigo-600 form-radio"
+                />
+                <span class="ml-2 text-sm text-gray-700">Activo</span>
+              </label>
+              <label class="inline-flex items-center">
+                <input
+                  type="radio"
+                  name="editStatus"
+                  value="inactive"
+                  [(ngModel)]="editingMember.status"
+                  class="w-4 h-4 text-indigo-600 form-radio"
+                />
+                <span class="ml-2 text-sm text-gray-700">Inactivo</span>
+              </label>
+            </div>
+          </div>
+        </div>
+      </div>
+  
+      <!-- Botones de acción en la parte inferior -->
+      <div class="flex gap-3 justify-end pt-4 mt-6 border-t">
+        <button 
+          type="button"
+          (click)="isEditing = false"
+          class="px-4 py-2 text-sm font-medium text-gray-700 bg-white rounded-md border border-gray-300 shadow-sm transition-all hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+        >
+          Cancelar
+        </button>
+        <button 
+          type="submit"
+          class="px-4 py-2 text-sm font-medium text-white bg-indigo-600 rounded-md border border-transparent shadow-sm transition-all hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+        >
+          Guardar Cambios
+        </button>
+      </div>
+    </div>
+  </form>
+<!-- Modal de confirmación para eliminar -->
+<app-modal 
+  *ngIf="showModal" 
+  [title]="'Confirmar eliminación'" 
+  [message]="'¿Estás seguro de que deseas eliminar a ' + (memberToDelete?.name || '') + '?'" 
+  [confirmButtonText]="'Eliminar'" 
+  [cancelButtonText]="'Cancelar'" 
+  (onConfirm)="onConfirmDelete()" 
+  (onCancel)="onCancelDelete()"
+></app-modal>
+  

@@ -1,7 +1,7 @@
 <ng-container *ngIf="data">
-  <div class="p-6 my-4 bg-white shadow-lg rounded-lg w-full">
+  <div class="w-full p-6 my-4 bg-white rounded-lg shadow-lg">
     <div
-      class="flex gap-2 items-center justify-between cursor-pointer select-none"
+      class="flex items-center justify-between gap-2 cursor-pointer select-none"
     >
       <div
         class="flex items-center justify-center gap-2"
@@ -20,7 +20,7 @@
         <ng-container
           *ngIf="(data.children && data.children.length > 0) || data.content"
         >
-          <div class="cursor-pointer flex items-center">
+          <div class="flex items-center cursor-pointer">
             <svg
               xmlns="http://www.w3.org/2000/svg"
               width="14"
@@ -31,7 +31,7 @@
               stroke-width="2"
               stroke-linecap="round"
               stroke-linejoin="round"
-              class="icon icon-tabler icons-tabler-outline icon-tabler-plus rounded-full text-white transition-all duration-150 ease-linear delay-75"
+              class="text-white transition-all duration-150 ease-linear delay-75 rounded-full icon icon-tabler icons-tabler-outline icon-tabler-plus"
               [ngClass]="{
               'rotate-45 bg-red-500': isOpen,
               'bg-primary': !isOpen,
@@ -61,14 +61,14 @@
         (click)="toggleChildren()"
         (keydown.enter)="toggleChildren()"
         tabindex="0"
-        class="text-gray-600 text-xs flex mt-2 ml-3 gap-2 items-center w-full lg:w-3/4 select-none"
+        class="flex items-center w-full gap-2 mt-2 ml-3 text-xs text-gray-600 select-none lg:w-3/4"
       >
         {{ data.description }}
       </p>
     </ng-container>
 
     <div
-      class="overflow-hidden transition-all flex flex-col w-full duration-300 ease-in-out"
+      class="flex flex-col w-full overflow-hidden transition-all duration-300 ease-in-out"
       [ngClass]="{
         'max-h-0 opacity-0': !isOpen,
         'max-h-screen opacity-100': isOpen

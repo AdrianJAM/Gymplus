@@ -1,0 +1,221 @@
+<!-- src/app/pages/dashboard/modules/users/users.component.html -->
+<div class="container flex flex-col mx-auto h-full">
+  <div class="flex flex-col rounded-lg border shadow-sm bg-card text-card-foreground">
+    <!-- Sección fija (encabezado y buscador) -->
+    <div class="sticky top-0 z-20 bg-white border-b">
+      <div class="p-6">
+        <!-- Encabezado mejorado -->
+        <div class="header-container">
+          <div class="title-section">
+            <h2>Gestión de Usuarios</h2>
+            <p>Administra los usuarios del sistema y sus roles</p>
+          </div>
+          <div class="button-group">
+            <button class="action-button primary-button" (click)="exportToExcel()">
+              <span class="button-icon">📊</span>
+              Exportar a Excel
+            </button>
+            <button class="action-button secondary-button" (click)="setCreating()">
+              <span class="button-icon">➕</span>
+              Nuevo Usuario
+            </button>
+          </div>
+        </div>
+  
+        <!-- Mejora de la barra de búsqueda -->
+        <div class="flex gap-4 items-center mt-6">
+          <div class="relative flex-1">
+            <span class="flex absolute inset-y-0 left-0 items-center pl-3 text-gray-500">
+              🔍
+            </span>
+            <input
+              type="text"
+              [(ngModel)]="searchQuery"
+              placeholder="Buscar por nombre, email o rol..."
+              class="py-2.5 pr-4 pl-10 w-full rounded-lg border border-gray-300 transition-colors duration-200 focus:ring-indigo-500 focus:border-indigo-500"
+            />
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Contenido scrollable -->
+    <div class="overflow-y-auto flex-1">
+      <div class="p-6 pt-0">
+        <!-- Tabla -->
+        <app-cards-component-table
+          [headers]="tableHeaders"
+          [data]="filteredUsers"
+          (onEdit)="editUser($event)"
+          (onDelete)="deleteUser($event)"
+        ></app-cards-component-table>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Modal de fondo (compartido para crear y editar) -->
+<div class="overflow-y-auto fixed inset-0 z-40 bg-black bg-opacity-80 transition-opacity duration-300 ease-in-out"
+  [ngClass]="{'opacity-100 pointer-events-auto': isCreating || isEditing, 'opacity-0 pointer-events-none': !isCreating && !isEditing}"
+  (click)="closeModals()">
+</div>
+
+<!-- Modal de Nuevo Usuario -->
+<form 
+  *ngIf="isCreating"
+  class="fixed z-50 w-[95%] max-w-2xl mx-auto left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 bg-white rounded-lg shadow-xl transition-all duration-300"
+  [ngClass]="{'opacity-100 scale-100': isCreating, 'opacity-0 scale-95 pointer-events-none': !isCreating}"
+  (submit)="create()"
+  (click)="$event.stopPropagation()"
+>
+  <div class="p-6">
+    <!-- Encabezado del formulario -->
+    <div class="flex justify-between items-center pb-3 mb-6 border-b">
+      <h2 class="text-xl font-bold text-gray-800">Nuevo Usuario</h2>
+    </div>
+
+    <!-- Contenido del formulario -->
+    <div class="space-y-4">
+      <!-- Nombre completo -->
+      <div>
+        <label class="block mb-1 text-sm font-medium text-gray-700">Nombre completo</label>
+        <input
+          type="text"
+          placeholder="Ej: Juan Pérez"
+          name="name"
+          [(ngModel)]="user.name"
+          class="p-2.5 w-full rounded-md border border-gray-300 transition-colors focus:ring-indigo-500 focus:border-indigo-500"
+        />
+      </div>
+
+      <!-- Email -->
+      <div>
+        <label class="block mb-1 text-sm font-medium text-gray-700">Correo electrónico</label>
+        <input
+          type="email"
+          placeholder="ejemplo@correo.com"
+          name="email"
+          [(ngModel)]="user.email"
+          class="p-2.5 w-full rounded-md border border-gray-300 transition-colors focus:ring-indigo-500 focus:border-indigo-500"
+        />
+      </div>
+
+      <!-- Rol -->
+      <div>
+        <label class="block mb-1 text-sm font-medium text-gray-700">Rol</label>
+        <select
+          name="role"
+          [(ngModel)]="user.role"
+          class="p-2.5 w-full bg-white rounded-md border border-gray-300 transition-colors focus:ring-indigo-500 focus:border-indigo-500"
+        >
+            <option value="" disabled selected>Selecciona un rol</option>
+            <option [value]="UserRole.ADMIN">Administrador</option>
+            <option [value]="UserRole.MANAGER">Gerente</option>
+            <option [value]="UserRole.EMPLOYEE">Empleado</option>
+        </select>
+      </div>
+    </div>
+
+    <!-- Botones de acción -->
+    <div class="flex gap-3 justify-end pt-4 mt-6 border-t">
+      <button 
+        type="button"
+        (click)="isCreating = false"
+        class="px-4 py-2 text-sm font-medium text-gray-700 bg-white rounded-md border border-gray-300 shadow-sm transition-all hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+      >
+        Cancelar
+      </button>
+      <button 
+        type="submit"
+        class="px-4 py-2 text-sm font-medium text-white bg-indigo-600 rounded-md border border-transparent shadow-sm transition-all hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+      >
+        Guardar
+      </button>
+    </div>
+  </div>
+</form>
+
+<!-- Formulario Modal para Editar -->
+<form 
+  *ngIf="isEditing"
+  class="fixed z-50 w-[95%] max-w-2xl mx-auto left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 bg-white rounded-lg shadow-xl transition-all duration-300"
+  [ngClass]="{'opacity-100 scale-100': isEditing, 'opacity-0 scale-95 pointer-events-none': !isEditing}"
+  (submit)="updateUser()"
+  (click)="$event.stopPropagation()"
+>
+  <div class="p-6">
+    <!-- Encabezado del formulario -->
+    <div class="flex justify-between items-center pb-3 mb-6 border-b">
+      <h2 class="text-xl font-bold text-gray-800">Editar Usuario</h2>
+    </div>
+
+    <!-- Contenido del formulario -->
+    <div class="space-y-4">
+      <!-- Nombre completo -->
+      <div>
+        <label class="block mb-1 text-sm font-medium text-gray-700">Nombre completo</label>
+        <input
+          type="text"
+          placeholder="Ej: Juan Pérez"
+          name="name"
+          [(ngModel)]="editingUser.name"
+          class="p-2.5 w-full rounded-md border border-gray-300 transition-colors focus:ring-indigo-500 focus:border-indigo-500"
+        />
+      </div>
+
+      <!-- Email -->
+      <div>
+        <label class="block mb-1 text-sm font-medium text-gray-700">Correo electrónico</label>
+        <input
+          type="email"
+          placeholder="ejemplo@correo.com"
+          name="email"
+          [(ngModel)]="editingUser.email"
+          class="p-2.5 w-full rounded-md border border-gray-300 transition-colors focus:ring-indigo-500 focus:border-indigo-500"
+        />
+      </div>
+
+      <!-- Rol -->
+      <div>
+        <label class="block mb-1 text-sm font-medium text-gray-700">Rol</label>
+        <select
+          name="role"
+          [(ngModel)]="editingUser.role"
+          class="p-2.5 w-full bg-white rounded-md border border-gray-300 transition-colors focus:ring-indigo-500 focus:border-indigo-500"
+        >
+          <option [value]="UserRole.ADMIN">Administrador</option>
+          <option [value]="UserRole.MANAGER">Gerente</option>
+          <option [value]="UserRole.EMPLOYEE">Empleado</option>
+        </select>
+      </div>
+    </div>
+
+    <!-- Botones de acción -->
+    <div class="flex gap-3 justify-end pt-4 mt-6 border-t">
+      <button 
+        type="button"
+        (click)="isEditing = false"
+        class="px-4 py-2 text-sm font-medium text-gray-700 bg-white rounded-md border border-gray-300 shadow-sm transition-all hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+      >
+        Cancelar
+      </button>
+      <button 
+        type="submit"
+        class="px-4 py-2 text-sm font-medium text-white bg-indigo-600 rounded-md border border-transparent shadow-sm transition-all hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+      >
+        Guardar
+      </button>
+    </div>
+  </div>
+</form>
+
+<!-- Modal de confirmación para eliminar -->
+<app-modal 
+  *ngIf="showModal" 
+  [title]="'Confirmar eliminación'" 
+  [message]="'¿Estás seguro de que deseas eliminar a ' + (userToDelete?.name || '') + '?'" 
+  [confirmButtonText]="'Eliminar'" 
+  [cancelButtonText]="'Cancelar'" 
+  (onConfirm)="onConfirmDelete()" 
+  (onCancel)="onCancelDelete()"
+></app-modal>

@@ -1,0 +1,43 @@
+<div class="rounded-md border">
+  <table class="min-w-full">
+    <thead>
+      <tr class="bg-gray-50">
+        <th *ngFor="let header of headers" 
+            [class]="'px-6 py-3 text-left ' + (header.width ? header.width : '')"
+            [ngStyle]="{'text-align': header.align || 'left'}">
+          {{header.label}}
+        </th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let item of data">
+        <td *ngFor="let header of headers" class="px-6 py-4">
+          <ng-container [ngSwitch]="header.key">
+            <!-- Estado especial -->
+            <span *ngSwitchCase="'status'" 
+                  [class]="item[header.key] === 'active' ? 
+                    'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'" 
+                  class="inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-medium">
+              {{item[header.key] === 'active' ? 'Activo' : 'Inactivo'}}
+            </span>
+            <!-- Acciones -->
+            <div *ngSwitchCase="'actions'" class="flex items-center justify-end gap-2">
+              <button (click)="onEdit.emit(item)" class="text-gray-400 hover:text-indigo-600 transition-colors duration-200">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z" />
+                </svg>
+              </button>
+              <button (click)="onDelete.emit(item)" class="text-gray-400 hover:text-red-600 transition-colors duration-200">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                </svg>
+              </button>
+            </div>
+            <!-- Valor por defecto -->
+            <span *ngSwitchDefault>{{item[header.key]}}</span>
+          </ng-container>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+</div>

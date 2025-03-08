@@ -22,7 +22,7 @@ export class CardsComponentComponent {
   isOpen: boolean = true;
   constructor() {}
 
-  // crear una funcon que devuelca un el icono segun su nombre en un map
+  // crear una funcion que devuelca un el icono segun su nombre en un map
   // a futuro porque ahora no hay tiempo que perder XD
   @HostListener('keypress', ['$event'])
   print(event: KeyboardEvent) {

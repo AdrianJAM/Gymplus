@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
-import { UserDashboardService } from '../user-dashboard/user-dashboard.service';
+import { MemberService } from '../../../core/services/members/member.service';
 import { ActivatedRoute, Params } from '@angular/router';
-import { User } from '../user-dashboard/user-dashboard.model';
+import { Member } from '../../../core/models/member.model';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { ProfileUserCardComponent } from './profile-user-card/profile-user-card.component';
@@ -17,12 +17,12 @@ import { ModalComponent } from '../../../components/ui/modal/modal.component';
     ProfileUserCardComponent,
     ModalComponent,
   ],
-  providers: [UserDashboardService],
+  providers: [MemberService],
   templateUrl: './profile.component.html',
   styleUrl: './profile.component.css',
 })
 export class ProfileComponent implements OnInit {
-  user: User | undefined;
+  member: Member | undefined;
   error: string | null = null;
   isCardOpen: boolean = false;
 
@@ -31,16 +31,16 @@ export class ProfileComponent implements OnInit {
   }
 
   constructor(
-    private _userDashboardService: UserDashboardService,
+    private _memberService: MemberService,
     private route: ActivatedRoute
   ) {}
 
   ngOnInit(): void {
     this.route.params.subscribe((params: Params) => {
       const id = params['id'];
-      this._userDashboardService.getbyid(id).subscribe((data: User) => {
+      this._memberService.getbyid(id).subscribe((data: Member) => {
         console.log(data);
-        this.user = data;
+        this.member = data;
       });
     });
   }

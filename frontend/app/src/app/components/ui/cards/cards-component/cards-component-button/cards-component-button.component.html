@@ -1,12 +1,11 @@
 <ng-container *ngIf="data">
   <div class="relative inline-block group">
     <button
-      class="flex items-center justify-center rounded-lg px-2 text-xs py-1 transition-colors duration-150 ease-linear"
+      class="flex items-center justify-center px-2 py-1 text-xs transition-colors duration-150 ease-linear rounded-lg"
       [ngClass]="[
-        data.color || 'bg-primary',
-        data.textcolor || 'text-white',
-        data.hovercolor || 'hover:bg-gray-950',
-        data.hovertextcolor || 'hover:text-white',
+        getStyles().color,
+        getStyles().textcolor,
+        getStyles().hovercolor,
         data.disabled ? 'opacity-50 cursor-not-allowed' : 'cursor-pointer'
       ]"
       [disabled]="data.disabled"
@@ -14,14 +13,13 @@
     >
       <app-icon-loader
         *ngIf="data.icon"
-        iconName="{{ data.icon }}"
+        [iconName]="data.icon"
       ></app-icon-loader>
-
-      <span *ngIf="data.title">{{ data.title }} </span>
+      <span *ngIf="data.title">{{ data.title }}</span>
     </button>
 
     <div
-      class="absolute bottom-full left-1/2 transform -translate-x-1/2 mb-2 w-32 bg-gray-700 text-white text-sm rounded-lg p-2 opacity-0 transition-opacity duration-300 ease-in-out group-hover:opacity-100"
+      class="absolute w-32 p-2 mb-2 text-sm text-white transition-opacity duration-300 ease-in-out transform -translate-x-1/2 bg-gray-700 rounded-lg opacity-0 bottom-full left-1/2 group-hover:opacity-100"
       *ngIf="data.tooltip"
     >
       {{ data.tooltip }}
