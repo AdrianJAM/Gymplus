@@ -1,0 +1,180 @@
+<div class="config-container">
+  <!-- Encabezado -->
+  <div class="header">
+    <div class="header-icon">⚙️</div>
+    <div class="header-content">
+      <h1>Configuración</h1>
+      <p>Gestiona la configuración y herramientas del sistema</p>
+    </div>
+  </div>
+
+  <!-- Tarjetas de estadísticas -->
+  <div class="stats-cards">
+    <div class="stat-card">
+      <div class="stat-header">
+        <span>Estado del Sistema</span>
+        <div class="stat-icon success">⚡</div>
+      </div>
+      <div class="stat-value">{{systemStatus}}</div>
+      <div class="stat-footer">Último reinicio: {{lastRestart}}</div>
+    </div>
+
+    <div class="stat-card">
+      <div class="stat-header">
+        <span>Usuarios Activos</span>
+        <div class="stat-icon info">👥</div>
+      </div>
+      <div class="stat-value">{{activeUsers}}</div>
+      <div class="stat-footer">{{usersPercentage}}</div>
+    </div>
+
+    <div class="stat-card">
+      <div class="stat-header">
+        <span>Tiempo de Respuesta</span>
+        <div class="stat-icon warning">⏱️</div>
+      </div>
+      <div class="stat-value">{{responseTime}}</div>
+      <div class="stat-footer">{{responseTimeDesc}}</div>
+    </div>
+
+    <div class="stat-card">
+      <div class="stat-header">
+        <span>Errores Hoy</span>
+        <div class="stat-icon danger">⚠️</div>
+      </div>
+      <div class="stat-value">{{errorsToday}}</div>
+      <div class="stat-footer">{{errorsComparison}}</div>
+    </div>
+  </div>
+
+  <!-- Navegación por pestañas -->
+  <div class="tab-navigation">
+    <div class="tab" [class.active]="activeTab === 'general'" (click)="changeTab('general')">General</div>
+    <div class="tab" [class.active]="activeTab === 'database'" (click)="changeTab('database')">Base de Datos</div>
+    <div class="tab" [class.active]="activeTab === 'debug'" (click)="changeTab('debug')">Debug</div>
+    <div class="tab" [class.active]="activeTab === 'api'" (click)="changeTab('api')">API</div>
+    <div class="tab" [class.active]="activeTab === 'security'" (click)="changeTab('security')">Seguridad</div>
+  </div>
+
+  <!-- Contenido de las pestañas -->
+  <div class="tab-content">
+    <!-- Pestaña General -->
+    <div class="tab-panel" *ngIf="activeTab === 'general'">
+      <h2>Entorno</h2>
+      <div class="info-grid">
+        <div class="info-row">
+          <div class="info-label">Versión de Node</div>
+          <div class="info-value">{{nodeVersion}}</div>
+        </div>
+        <div class="info-row">
+          <div class="info-label">Ambiente</div>
+          <div class="info-value">{{environment}}</div>
+        </div>
+      </div>
+
+      <h2>Gestión de Caché</h2>
+      <button class="action-button primary" (click)="clearCache()">
+        <span class="button-icon">🧹</span>
+        Limpiar Caché
+      </button>
+    </div>
+
+    <!-- Pestaña Base de Datos -->
+    <div class="tab-panel" *ngIf="activeTab === 'database'">
+      <h2>Información de la Base de Datos</h2>
+      <div class="info-grid">
+        <div class="info-row">
+          <div class="info-label">Estado</div>
+          <div class="info-value">
+            <span class="status-dot connected"></span>
+            {{dbStatus}}
+          </div>
+        </div>
+        <div class="info-row">
+          <div class="info-label">Tamaño</div>
+          <div class="info-value">{{dbSize}}</div>
+        </div>
+      </div>
+
+      <h2 class="danger-zone">Zona de Peligro</h2>
+      <button class="action-button danger" (click)="resetDatabase()">
+        <span class="button-icon">🗑️</span>
+        Resetear Base de Datos
+      </button>
+    </div>
+
+    <!-- Pestaña Debug -->
+    <div class="tab-panel" *ngIf="activeTab === 'debug'">
+      <h2>Consola</h2>
+      <div class="console-output">
+        <div *ngFor="let log of consoleLog" class="console-line" [ngClass]="log.type">
+          [{{log.timestamp}}] {{log.message}}
+        </div>
+      </div>
+
+      <h2>Métricas de Rendimiento</h2>
+      <div class="metrics-grid">
+        <div class="metric-card">
+          <div class="metric-title">Uso de Memoria</div>
+          <div class="metric-value">{{memoryUsage}}</div>
+        </div>
+        <div class="metric-card">
+          <div class="metric-title">Carga CPU</div>
+          <div class="metric-value">{{cpuLoad}}</div>
+        </div>
+        <div class="metric-card">
+          <div class="metric-title">Sesiones Activas</div>
+          <div class="metric-value">{{activeSessions}}</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Pestaña API -->
+    <div class="tab-panel" *ngIf="activeTab === 'api'">
+      <h2>Claves API</h2>
+      <div class="api-key-section">
+        <div class="api-key-label">Clave API de Desarrollo</div>
+        <div class="api-key-value">{{apiKey}}</div>
+        <button class="action-button primary" (click)="regenerateApiKey()">Regenerar</button>
+      </div>
+
+      <h2>Endpoints</h2>
+      <div class="endpoints-list">
+        <div *ngFor="let endpoint of endpoints" class="endpoint-item">
+          <div class="endpoint-path">{{endpoint.path}}</div>
+          <div class="endpoint-status" [ngClass]="{'active': endpoint.status === 'Activo'}">{{endpoint.status}}</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Pestaña Seguridad -->
+    <div class="tab-panel" *ngIf="activeTab === 'security'">
+      <h2>Autenticación</h2>
+      <div class="auth-section">
+        <div class="auth-option">
+          <span>Autenticación de Dos Factores</span>
+          <label class="toggle-switch">
+            <input type="checkbox" [(ngModel)]="twoFactorEnabled">
+            <span class="toggle-slider"></span>
+          </label>
+        </div>
+      </div>
+
+      <h2>Registros de Acceso</h2>
+      <div class="access-logs">
+        <div class="log-item">
+          <div class="log-label">Último intento de acceso</div>
+          <div class="log-value">{{lastAccessAttempt}}</div>
+        </div>
+        <div class="log-item">
+          <div class="log-label">Dirección IP</div>
+          <div class="log-value">{{ipAddress}}</div>
+        </div>
+        <div class="log-item">
+          <div class="log-label">Navegador</div>
+          <div class="log-value">{{browser}}</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

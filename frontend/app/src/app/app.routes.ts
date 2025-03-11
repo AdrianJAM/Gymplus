@@ -3,7 +3,7 @@ import { DashboardComponent } from './pages/dashboard/dashboard.component';
 import { HomePageComponent } from './pages/home-page/home-page.component';
 import { memberDashboardComponent } from './../app/pages/dashboard/modules/members/members.component';
 import { ProfileComponent } from './pages/dashboard/profile/profile.component';
-import { DashboardConfigComponent } from './pages/dashboard/dashboard-config/dashboard-config.component';
+import { ConfigComponent } from './pages/dashboard/modules/config/config.component';
 import { UsersComponent } from './pages/dashboard/modules/users/users.component';
 
 export const routes: Routes = [
@@ -37,7 +37,7 @@ export const routes: Routes = [
       },
       {
         path: 'config',
-        component: DashboardConfigComponent,
+        component: ConfigComponent,
       },
 
       // Rutas de Gerente

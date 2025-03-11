@@ -1,189 +1,301 @@
-<div class="reports-container">
-  <h1 class="reports-title">Gym Reports Dashboard</h1>
-
-  <div class="date-filter-section">
-    <mat-card>
-      <mat-card-header>
-        <mat-card-title>Filter Reports</mat-card-title>
-      </mat-card-header>
-      <mat-card-content>
-        <div class="date-range-picker">
-          <mat-form-field appearance="outline">
-            <mat-label>Start Date</mat-label>
-            <input matInput [matDatepicker]="startPicker" [(ngModel)]="startDate">
-            <mat-datepicker-toggle matSuffix [for]="startPicker"></mat-datepicker-toggle>
-            <mat-datepicker #startPicker></mat-datepicker>
-          </mat-form-field>
-
-          <mat-form-field appearance="outline">
-            <mat-label>End Date</mat-label>
-            <input matInput [matDatepicker]="endPicker" [(ngModel)]="endDate">
-            <mat-datepicker-toggle matSuffix [for]="endPicker"></mat-datepicker-toggle>
-            <mat-datepicker #endPicker></mat-datepicker>
-          </mat-form-field>
-
-          <button mat-raised-button color="primary" (click)="generateReport()">Generate Report</button>
+<div class="flex flex-col min-h-screen">
+  <div class="flex flex-col flex-grow">
+    <!-- Header unificado -->
+    <div class="header-unified">
+      <div class="header-content">
+        <!-- Título -->
+        <div class="title-section">
+          <h2>Reportes</h2>
+          <p>Gestiona y analiza la información de tu gimnasio</p>
         </div>
-      </mat-card-content>
-    </mat-card>
-  </div>
 
-  <div class="reports-grid">
-    <!-- Membership Statistics -->
-    <mat-card class="report-card">
-      <mat-card-header>
-        <mat-card-title>Membership Statistics</mat-card-title>
-      </mat-card-header>
-      <mat-card-content>
-        <table mat-table [dataSource]="membershipStats" class="mat-elevation-z2">
-          <!-- Type Column -->
-          <ng-container matColumnDef="type">
-            <th mat-header-cell *matHeaderCellDef>Membership Type</th>
-            <td mat-cell *matCellDef="let element">{{element.type}}</td>
-          </ng-container>
-
-          <!-- Active Column -->
-          <ng-container matColumnDef="active">
-            <th mat-header-cell *matHeaderCellDef>Active</th>
-            <td mat-cell *matCellDef="let element">{{element.active}}</td>
-          </ng-container>
-
-          <!-- Expired Column -->
-          <ng-container matColumnDef="expired">
-            <th mat-header-cell *matHeaderCellDef>Expired</th>
-            <td mat-cell *matCellDef="let element">{{element.expired}}</td>
-          </ng-container>
-
-          <!-- Revenue Column -->
-          <ng-container matColumnDef="revenue">
-            <th mat-header-cell *matHeaderCellDef>Revenue ($)</th>
-            <td mat-cell *matCellDef="let element">{{element.revenue | currency}}</td>
-          </ng-container>
-
-          <tr mat-header-row *matHeaderRowDef="displayedMembershipColumns"></tr>
-          <tr mat-row *matRowDef="let row; columns: displayedMembershipColumns;"></tr>
-        </table>
-
-        <div class="summary-section">
-          <div class="summary-item">
-            <h3>Total Active Members</h3>
-            <p class="summary-value">301</p>
+        <!-- Herramientas alineadas a la derecha -->
+        <div class="tools-section">
+          <!-- Fecha de Inicio -->
+          <div class="date-field-mini">
+            <div class="text-xs font-medium text-gray-600 mb-1">Inicio</div>
+            <input type="date" [value]="formatDate(startDate)" (input)="onStartDateChange($event)" class="date-input" required>
           </div>
-          <div class="summary-item">
-            <h3>Total Revenue</h3>
-            <p class="summary-value">$35,360</p>
+
+          <!-- Fecha de Fin -->
+          <div class="date-field-mini">
+            <div class="text-xs font-medium text-gray-600 mb-1">Fin</div>
+            <input type="date" [value]="formatDate(endDate)" (input)="onEndDateChange($event)" class="date-input" required>
+          </div>
+
+          <!-- Botones de acción -->
+          <button class="toolbar-button search" (click)="generateReport()">
+            <span class="button-icon">🔍</span>
+            <span class="button-text">Buscar</span>
+          </button>
+          <div class="relative">
+            <button class="toolbar-button export" (click)="toggleExportMenu()">
+              <span class="button-icon">📊</span>
+              <span class="button-text">Exportar</span>
+            </button>
+            <!-- Menú de exportación -->
+            <div *ngIf="showExportMenu" class="export-menu">
+              <button class="export-option" (click)="exportReport('pdf')">
+                <span class="option-icon">📄</span>
+                Exportar en PDF
+              </button>
+              <button class="export-option" (click)="exportReport('excel')">
+                <span class="option-icon">📑</span>
+                Exportar en Excel
+              </button>
+            </div>
           </div>
         </div>
-      </mat-card-content>
-    </mat-card>
+      </div>
 
-    <!-- Attendance Data -->
-    <mat-card class="report-card">
-      <mat-card-header>
-        <mat-card-title>Daily Attendance</mat-card-title>
-      </mat-card-header>
-      <mat-card-content>
-        <table mat-table [dataSource]="attendanceData" class="mat-elevation-z2">
-          <!-- Date Column -->
-          <ng-container matColumnDef="date">
-            <th mat-header-cell *matHeaderCellDef>Date</th>
-            <td mat-cell *matCellDef="let element">{{element.date | date}}</td>
-          </ng-container>
-
-          <!-- Count Column -->
-          <ng-container matColumnDef="count">
-            <th mat-header-cell *matHeaderCellDef>Visitors</th>
-            <td mat-cell *matCellDef="let element">{{element.count}}</td>
-          </ng-container>
-
-          <!-- Peak Hour Column -->
-          <ng-container matColumnDef="peak_hour">
-            <th mat-header-cell *matHeaderCellDef>Peak Hour</th>
-            <td mat-cell *matCellDef="let element">{{element.peak_hour}}</td>
-          </ng-container>
-
-          <tr mat-header-row *matHeaderRowDef="displayedAttendanceColumns"></tr>
-          <tr mat-row *matRowDef="let row; columns: displayedAttendanceColumns;"></tr>
-        </table>
-
-        <div class="summary-section">
-          <div class="summary-item">
-            <h3>Average Daily Attendance</h3>
-            <p class="summary-value">91</p>
-          </div>
-          <div class="summary-item">
-            <h3>Most Popular Time</h3>
-            <p class="summary-value">18:00 - 19:00</p>
+      <!-- Stats cards en una nueva fila -->
+      <div class="stats-section">
+        <div class="stat-mini-card">
+          <span class="stat-icon">👥</span>
+          <div class="stat-content">
+            <div class="stat-value">128</div>
+            <div class="stat-label">Miembros</div>
           </div>
         </div>
-      </mat-card-content>
-    </mat-card>
-
-    <!-- Additional Reports -->
-    <mat-card class="report-card">
-      <mat-card-header>
-        <mat-card-title>Popular Equipment</mat-card-title>
-      </mat-card-header>
-      <mat-card-content>
-        <div class="equipment-stats">
-          <div class="equipment-item">
-            <h3>Treadmills</h3>
-            <p class="usage-percent">87%</p>
-            <p class="usage-label">Usage Rate</p>
-          </div>
-          <div class="equipment-item">
-            <h3>Bench Press</h3>
-            <p class="usage-percent">76%</p>
-            <p class="usage-label">Usage Rate</p>
-          </div>
-          <div class="equipment-item">
-            <h3>Squat Racks</h3>
-            <p class="usage-percent">82%</p>
-            <p class="usage-label">Usage Rate</p>
-          </div>
-          <div class="equipment-item">
-            <h3>Ellipticals</h3>
-            <p class="usage-percent">65%</p>
-            <p class="usage-label">Usage Rate</p>
+        <div class="stat-mini-card">
+          <span class="stat-icon">💰</span>
+          <div class="stat-content">
+            <div class="stat-value">$12,450</div>
+            <div class="stat-label">Ingresos</div>
           </div>
         </div>
-      </mat-card-content>
-    </mat-card>
-
-    <!-- Revenue Trends -->
-    <mat-card class="report-card">
-      <mat-card-header>
-        <mat-card-title>Revenue Breakdown</mat-card-title>
-      </mat-card-header>
-      <mat-card-content>
-        <div class="revenue-breakdown">
-          <div class="revenue-item">
-            <h3>Memberships</h3>
-            <p class="revenue-percent">75%</p>
-            <p class="revenue-amount">$26,520</p>
-          </div>
-          <div class="revenue-item">
-            <h3>Personal Training</h3>
-            <p class="revenue-percent">15%</p>
-            <p class="revenue-amount">$5,304</p>
-          </div>
-          <div class="revenue-item">
-            <h3>Supplements</h3>
-            <p class="revenue-percent">7%</p>
-            <p class="revenue-amount">$2,475</p>
-          </div>
-          <div class="revenue-item">
-            <h3>Apparel</h3>
-            <p class="revenue-percent">3%</p>
-            <p class="revenue-amount">$1,061</p>
+        <div class="stat-mini-card">
+          <span class="stat-icon">📈</span>
+          <div class="stat-content">
+            <div class="stat-value">42</div>
+            <div class="stat-label">Asistencia</div>
           </div>
         </div>
-      </mat-card-content>
-    </mat-card>
-  </div>
+        <div class="stat-mini-card">
+          <span class="stat-icon">⏰</span>
+          <div class="stat-content">
+            <div class="stat-value">18:00</div>
+            <div class="stat-label">Hora pico</div>
+          </div>
+        </div>
+      </div>
+    </div>
 
-  <div class="export-section">
-    <button mat-raised-button color="accent">Export to PDF</button>
-    <button mat-raised-button color="accent">Export to Excel</button>
+    <!-- Tabs Navigation -->
+    <div class="tabs-container">
+      <button class="tab-button" 
+              [ngClass]="{'tab-active': activeTab === 'general'}"
+              (click)="setActiveTab('general')">General</button>
+      <button class="tab-button" 
+              [ngClass]="{'tab-active': activeTab === 'miembros'}"
+              (click)="setActiveTab('miembros')">Miembros</button>
+      <button class="tab-button" 
+              [ngClass]="{'tab-active': activeTab === 'clases'}"
+              (click)="setActiveTab('clases')">Clases</button>
+      <button class="tab-button" 
+              [ngClass]="{'tab-active': activeTab === 'finanzas'}"
+              (click)="setActiveTab('finanzas')">Finanzas</button>
+    </div>
+
+    <!-- Tab Content -->
+    <div class="grid grid-cols-1 gap-6 lg:grid-cols-2" *ngIf="activeTab === 'general'">
+      <!-- Membership Statistics -->
+      <mat-card class="transition-all duration-300 bg-white shadow-lg rounded-xl report-card hover:shadow-xl">
+        <mat-card-header>
+          <mat-card-title>Estadísticas de Membresías</mat-card-title>
+        </mat-card-header>
+        <mat-card-content>
+          <table mat-table [dataSource]="membershipStats" class="w-full">
+            <ng-container matColumnDef="type">
+              <th mat-header-cell *matHeaderCellDef>Tipo de Membresía</th>
+              <td mat-cell *matCellDef="let element">{{element.type}}</td>
+            </ng-container>
+
+            <ng-container matColumnDef="active">
+              <th mat-header-cell *matHeaderCellDef>Activos</th>
+              <td mat-cell *matCellDef="let element">{{element.active}}</td>
+            </ng-container>
+
+            <ng-container matColumnDef="expired">
+              <th mat-header-cell *matHeaderCellDef>Expirados</th>
+              <td mat-cell *matCellDef="let element">{{element.expired}}</td>
+            </ng-container>
+
+            <ng-container matColumnDef="revenue">
+              <th mat-header-cell *matHeaderCellDef>Ingresos ($)</th>
+              <td mat-cell *matCellDef="let element">{{element.revenue | currency}}</td>
+            </ng-container>
+
+            <tr mat-header-row *matHeaderRowDef="displayedMembershipColumns"></tr>
+            <tr mat-row *matRowDef="let row; columns: displayedMembershipColumns;"></tr>
+          </table>
+
+          <div class="grid grid-cols-2 gap-4 mt-6">
+            <div class="p-4 text-center border border-blue-100 rounded-lg bg-blue-50">
+              <h3 class="text-sm text-gray-700">Total Miembros Activos</h3>
+              <p class="mt-2 text-2xl font-semibold text-blue-800">301</p>
+            </div>
+            <div class="p-4 text-center border border-green-100 rounded-lg bg-green-50">
+              <h3 class="text-sm text-gray-700">Ingresos Totales</h3>
+              <p class="mt-2 text-2xl font-semibold text-green-800">$35,360</p>
+            </div>
+          </div>
+        </mat-card-content>
+      </mat-card>
+
+      <!-- Attendance Data -->
+      <mat-card class="transition-all duration-300 bg-white shadow-lg rounded-xl report-card hover:shadow-xl">
+        <mat-card-header>
+          <mat-card-title>Asistencia Diaria</mat-card-title>
+        </mat-card-header>
+        <mat-card-content>
+          <table mat-table [dataSource]="attendanceData" class="w-full">
+            <ng-container matColumnDef="date">
+              <th mat-header-cell *matHeaderCellDef>Fecha</th>
+              <td mat-cell *matCellDef="let element">{{element.date | date}}</td>
+            </ng-container>
+
+            <ng-container matColumnDef="count">
+              <th mat-header-cell *matHeaderCellDef>Visitantes</th>
+              <td mat-cell *matCellDef="let element">{{element.count}}</td>
+            </ng-container>
+
+            <ng-container matColumnDef="peak_hour">
+              <th mat-header-cell *matHeaderCellDef>Hora Pico</th>
+              <td mat-cell *matCellDef="let element">{{element.peak_hour}}</td>
+            </ng-container>
+
+            <tr mat-header-row *matHeaderRowDef="displayedAttendanceColumns"></tr>
+            <tr mat-row *matRowDef="let row; columns: displayedAttendanceColumns;"></tr>
+          </table>
+        </mat-card-content>
+      </mat-card>
+    </div>
+
+    <div class="grid grid-cols-1 gap-6 lg:grid-cols-2" *ngIf="activeTab === 'miembros'">
+      <!-- Equipment Usage -->
+      <mat-card class="transition-all duration-300 bg-white shadow-lg rounded-xl report-card hover:shadow-xl">
+        <mat-card-header>
+          <mat-card-title>Uso de Equipamiento</mat-card-title>
+        </mat-card-header>
+        <mat-card-content>
+          <div class="p-4">
+            <div *ngFor="let item of equipmentUsage" class="mb-4">
+              <div class="flex justify-between mb-1">
+                <span class="text-sm font-medium text-gray-700">{{item.name}}</span>
+                <span class="text-sm font-medium text-gray-700">{{item.usage}}%</span>
+              </div>
+              <div class="w-full h-2.5 bg-gray-200 rounded-full">
+                <div class="h-2.5 bg-indigo-600 rounded-full" [style.width.%]="item.usage"></div>
+              </div>
+            </div>
+          </div>
+        </mat-card-content>
+      </mat-card>
+
+      <!-- Revenue Breakdown -->
+      <mat-card class="transition-all duration-300 bg-white shadow-lg rounded-xl report-card hover:shadow-xl">
+        <mat-card-header>
+          <mat-card-title>Desglose de Ingresos</mat-card-title>
+        </mat-card-header>
+        <mat-card-content>
+          <div class="p-4">
+            <div *ngFor="let item of revenueBreakdown" class="mb-4">
+              <div class="flex justify-between mb-1">
+                <span class="text-sm font-medium text-gray-700">{{item.category}}</span>
+                <span class="text-sm font-medium text-gray-700">{{item.percentage}}% ({{item.amount | currency}})</span>
+              </div>
+              <div class="w-full h-2.5 bg-gray-200 rounded-full">
+                <div class="h-2.5 bg-purple-600 rounded-full" [style.width.%]="item.percentage"></div>
+              </div>
+            </div>
+          </div>
+        </mat-card-content>
+      </mat-card>
+    </div>
+
+    <div class="grid grid-cols-1 gap-6 lg:grid-cols-2" *ngIf="activeTab === 'clases'">
+      <!-- Clases Populares -->
+      <mat-card class="transition-all duration-300 bg-white shadow-lg rounded-xl report-card hover:shadow-xl">
+        <mat-card-header>
+          <mat-card-title>Clases Populares</mat-card-title>
+        </mat-card-header>
+        <mat-card-content>
+          <div class="p-4">
+            <div *ngFor="let item of popularClasses" class="mb-4">
+              <div class="flex justify-between mb-1">
+                <span class="text-sm font-medium text-gray-700">{{item.name}}</span>
+                <span class="text-sm font-medium text-gray-700">{{item.attendance}}%</span>
+              </div>
+              <div class="w-full h-2.5 bg-gray-200 rounded-full">
+                <div class="h-2.5 bg-indigo-600 rounded-full" [style.width.%]="item.attendance"></div>
+              </div>
+            </div>
+          </div>
+        </mat-card-content>
+      </mat-card>
+
+      <!-- Ocupación de Clases -->
+      <mat-card class="transition-all duration-300 bg-white shadow-lg rounded-xl report-card hover:shadow-xl">
+        <mat-card-header>
+          <mat-card-title>Ocupación de Clases</mat-card-title>
+        </mat-card-header>
+        <mat-card-content>
+          <div class="p-4">
+            <div *ngFor="let item of classOccupancy" class="mb-4">
+              <div class="flex justify-between mb-1">
+                <span class="text-sm font-medium text-gray-700">{{item.name}}</span>
+                <span class="text-sm font-medium text-gray-700">{{item.occupancy}}%</span>
+              </div>
+              <div class="w-full h-2.5 bg-gray-200 rounded-full">
+                <div class="h-2.5 bg-purple-600 rounded-full" [style.width.%]="item.occupancy"></div>
+              </div>
+            </div>
+          </div>
+        </mat-card-content>
+      </mat-card>
+    </div>
+
+    <div class="grid grid-cols-1 gap-6 lg:grid-cols-2" *ngIf="activeTab === 'finanzas'">
+      <!-- Ingresos vs Gastos -->
+      <mat-card class="transition-all duration-300 bg-white shadow-lg rounded-xl report-card hover:shadow-xl">
+        <mat-card-header>
+          <mat-card-title>Ingresos vs Gastos</mat-card-title>
+        </mat-card-header>
+        <mat-card-content>
+          <div class="p-4">
+            <div *ngFor="let item of incomeVsExpenses" class="mb-4">
+              <div class="flex justify-between mb-1">
+                <span class="text-sm font-medium text-gray-700">{{item.category}}</span>
+                <span class="text-sm font-medium text-gray-700">{{item.income}} ({{item.expense | currency}})</span>
+              </div>
+              <div class="w-full h-2.5 bg-gray-200 rounded-full">
+                <div class="h-2.5 bg-indigo-600 rounded-full" [style.width.%]="item.income"></div>
+              </div>
+            </div>
+          </div>
+        </mat-card-content>
+      </mat-card>
+
+      <!-- Fuentes de Ingresos -->
+      <mat-card class="transition-all duration-300 bg-white shadow-lg rounded-xl report-card hover:shadow-xl">
+        <mat-card-header>
+          <mat-card-title>Fuentes de Ingresos</mat-card-title>
+        </mat-card-header>
+        <mat-card-content>
+          <div class="p-4">
+            <div *ngFor="let item of incomeSources" class="mb-4">
+              <div class="flex justify-between mb-1">
+                <span class="text-sm font-medium text-gray-700">{{item.source}}</span>
+                <span class="text-sm font-medium text-gray-700">{{item.amount | currency}}</span>
+              </div>
+              <div class="w-full h-2.5 bg-gray-200 rounded-full">
+                <div class="h-2.5 bg-purple-600 rounded-full" [style.width.%]="item.percentage"></div>
+              </div>
+            </div>
+          </div>
+        </mat-card-content>
+      </mat-card>
+    </div>
   </div>
 </div>

@@ -1,1 +1,404 @@
-<p>schedule works!</p>
+<div class="schedule-container">
+  <!-- Header -->
+  <div class="header">
+    <div class="title-section">
+      <h1>Horarios</h1>
+      <p class="subtitle">Gestiona las clases, instructores y espacios de tu gimnasio</p>
+    </div>
+    <div class="actions">
+      <button class="btn-primary" (click)="openAddClassModal()">
+        <span class="icon">+</span>
+        Añadir clase
+      </button>
+      <button class="btn-secondary" (click)="exportSchedule()">
+        <span class="icon">↓</span>
+        Exportar
+      </button>
+    </div>
+  </div>
+
+  <!-- Search and Filters -->
+  <div class="filters-container">
+    <div class="search-bar">
+      <span class="search-icon">🔍</span>
+      <input type="text" placeholder="Buscar clases, instructores o salas..." [(ngModel)]="searchQuery">
+    </div>
+    <div class="filters">
+      <select>
+        <option value="">Todas las clases</option>
+        <option value="spinning">Spinning</option>
+        <option value="yoga">Yoga</option>
+        <option value="pilates">Pilates</option>
+        <option value="crossfit">Crossfit</option>
+        <option value="zumba">Zumba</option>
+      </select>
+      <select>
+        <option value="">Todos los instructores</option>
+        <option *ngFor="let instructor of instructors" [value]="instructor.id">{{ instructor.name }}</option>
+      </select>
+      <div class="date-picker">
+        <input type="date" [value]="selectedDate | date:'yyyy-MM-dd'">
+      </div>
+    </div>
+  </div>
+
+  <!-- View Tabs -->
+  <div class="view-tabs">
+    <button class="tab" [class.active]="currentView === 'monthly'" (click)="changeView('monthly')">Vista Mensual</button>
+    <button class="tab" [class.active]="currentView === 'weekly'" (click)="changeView('weekly')">Vista Semanal</button>
+    <button class="tab" [class.active]="currentView === 'daily'" (click)="changeView('daily')">Vista Diaria</button>
+    <button class="tab" [class.active]="currentView === 'classes'" (click)="changeView('classes')">Lista de Clases</button>
+    <button class="tab" [class.active]="currentView === 'instructors'" (click)="changeView('instructors')">Instructores</button>
+    <button class="tab" [class.active]="currentView === 'rooms'" (click)="changeView('rooms')">Salas</button>
+  </div>
+
+  <!-- Calendar Views -->
+  <div class="calendar-container" [ngSwitch]="currentView">
+    <!-- Weekly View -->
+    <div *ngSwitchCase="'weekly'" class="weekly-view">
+      <div class="calendar-header">
+        <button class="calendar-nav-btn" (click)="previousWeek()">❮</button>
+        <h2>{{ currentWeekStart | date:'d MMM' }} - {{ currentWeekEnd | date:'d MMM yyyy' }}</h2>
+        <button class="calendar-nav-btn" (click)="nextWeek()">❯</button>
+      </div>
+      <div class="weekly-grid">
+        <div class="day-column" *ngFor="let day of weekDays; let i = index">
+          <div class="day-header" [class.today]="isToday(weekDates[i])">
+            <div class="day-name">{{ day }}</div>
+            <div class="day-number">{{ weekDates[i] }} {{ getMonthShort(i) }}</div>
+          </div>
+          <div class="day-classes">
+            <div *ngFor="let class of getClassesForDay(i)" 
+                 class="class-card" 
+                 [ngClass]="class.name.toLowerCase()"
+                 (click)="viewClassDetails(class)">
+              <div class="class-name">{{ class.name }}</div>
+              <div class="class-time">{{ class.startTime }} - {{ class.endTime }}</div>
+              <div class="class-location">
+                <span class="location-icon">📍</span>
+                <span>{{ class.room }}</span>
+              </div>
+              <div class="class-capacity">
+                <span>{{ class.enrolled }}/{{ class.capacity }}</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Daily View -->
+    <div *ngSwitchCase="'daily'" class="daily-view">
+      <div class="day-header">
+        <button class="calendar-nav-btn" (click)="previousDay()">❮</button>
+        <h2 class="day-title">{{ selectedDate | date:'EEEE d MMMM yyyy' }}</h2>
+        <button class="calendar-nav-btn" (click)="nextDay()">❯</button>
+      </div>
+      <div class="day-classes-count">
+        {{ getDailyEvents().length }} clases programadas
+      </div>
+      <div class="day-classes-list">
+        <div *ngFor="let event of getDailyEvents()" 
+             class="day-class-card"
+             [ngClass]="event.name.toLowerCase()"
+             (click)="viewClassDetails(event)">
+          <div class="class-time">
+            <span class="time-icon">🕒</span>
+            {{ event.startTime }} - {{ event.endTime }}
+          </div>
+          <div class="class-details">
+            <div class="class-name">{{ event.name }}</div>
+            <div class="class-instructor">{{ event.instructor }}</div>
+            <div class="class-location">
+              <span class="location-icon">📍</span>
+              {{ event.room }}
+            </div>
+          </div>
+          <div class="class-capacity">
+            <div class="capacity-text">Ocupación: {{ event.enrolled }}/{{ event.capacity }}</div>
+            <div class="progress-bar">
+              <div class="progress" [style.width.%]="event.occupancy"></div>
+            </div>
+            <div class="capacity-percentage">{{ event.occupancy }}%</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Monthly View -->
+    <div *ngSwitchCase="'monthly'" class="monthly-view">
+      <div class="calendar-header">
+        <button class="calendar-nav-btn" (click)="previousMonth()">❮</button>
+        <h2>{{ currentMonth }} {{ currentYear }}</h2>
+        <button class="calendar-nav-btn" (click)="nextMonth()">❯</button>
+      </div>
+      <div class="month-weekdays">
+        <div class="weekday" *ngFor="let day of ['Lun', 'Mar', 'Mié', 'Jue', 'Vie', 'Sáb', 'Dom']">{{ day }}</div>
+      </div>
+      <div class="month-grid">
+        <div *ngFor="let day of calendarDays" 
+             class="month-day" 
+             [class.current-month]="day.isCurrentMonth"
+             [class.other-month]="!day.isCurrentMonth"
+             [class.today]="isToday(day.date)"
+             [class.expanded]="day.expanded">
+          <div class="day-number">{{ day.day }}</div>
+          <div class="day-classes" [class.expanded]="day.expanded">
+            <div *ngFor="let class of day.expanded ? day.classes : day.classes.slice(0, 3)" 
+                 class="month-class-item"
+                 [ngClass]="class.name.toLowerCase()">
+              <span class="class-name">{{ class.name }}</span>
+              <span class="class-time">({{ class.startTime }})</span>
+            </div>
+            <div *ngIf="!day.expanded && day.classes.length > 3" class="more-classes" (click)="toggleDayExpansion(day, $event)">
+              +{{ day.classes.length - 3 }} más
+            </div>
+            <div *ngIf="day.expanded" class="less-classes" (click)="toggleDayExpansion(day, $event)">
+              Mostrar menos
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Classes List View -->
+    <div *ngSwitchCase="'classes'" class="classes-view">
+      <table class="classes-table">
+        <thead>
+          <tr>
+            <th>Clase</th>
+            <th>Instructor</th>
+            <th>Sala</th>
+            <th>Día</th>
+            <th>Horario</th>
+            <th>Ocupación</th>
+            <th>Acciones</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let class of classes">
+            <td>{{ class.name }}</td>
+            <td>
+              <div class="instructor-info">
+                <div class="avatar"></div>
+                {{ class.instructor }}
+              </div>
+            </td>
+            <td>{{ class.room }}</td>
+            <td>{{ class.day }}</td>
+            <td>{{ class.startTime }} - {{ class.endTime }}</td>
+            <td>
+              <div class="occupancy-info">
+                <span>{{ class.enrolled }}/{{ class.capacity }}</span>
+                <div class="progress-bar">
+                  <div class="progress" [style.width.%]="(class.enrolled / class.capacity) * 100"></div>
+                </div>
+              </div>
+            </td>
+            <td>
+              <div class="action-buttons">
+                <button class="edit-btn" (click)="editClass(class)">✏️</button>
+                <button class="delete-btn" (click)="deleteClass(class.id)">🗑️</button>
+              </div>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- Instructors View -->
+    <div *ngSwitchCase="'instructors'" class="instructors-view">
+      <div class="instructor-grid">
+        <div class="instructor-card" *ngFor="let instructor of instructors">
+          <div class="instructor-header">
+            <div class="instructor-avatar"></div>
+            <div class="instructor-info">
+              <h3 class="instructor-name">{{ instructor.name }}</h3>
+              <p class="instructor-specialties">{{ instructor.specialties.join(', ') }}</p>
+            </div>
+          </div>
+          <div class="instructor-details">
+            <div class="detail-row">
+              <span class="detail-label">Disponibilidad:</span>
+              <span class="detail-value">{{ instructor.availability }}</span>
+            </div>
+            <div class="detail-row">
+              <span class="detail-label">Clases:</span>
+              <span class="detail-value">{{ instructor.classes }}</span>
+            </div>
+          </div>
+          <div class="instructor-actions">
+            <button class="view-btn" (click)="viewInstructorSchedule(instructor)">Ver horario</button>
+            <button class="edit-btn" (click)="editInstructor(instructor)">Editar</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Rooms View -->
+    <div *ngSwitchCase="'rooms'" class="rooms-view">
+      <div class="room-grid">
+        <div class="room-card" *ngFor="let room of rooms">
+          <h3 class="room-name">{{ room.name }}</h3>
+          <p class="room-capacity">Capacidad: {{ room.capacity }} personas</p>
+          <div class="room-details">
+            <div class="detail-row">
+              <span class="detail-label">Equipamiento:</span>
+              <span class="detail-value">{{ room.equipment }}</span>
+            </div>
+            <div class="detail-row">
+              <span class="detail-label">Clases programadas:</span>
+              <span class="detail-value">{{ room.scheduledClasses }}</span>
+            </div>
+          </div>
+          <div class="room-actions">
+            <button class="view-btn" (click)="viewRoomSchedule(room)">Ver horario</button>
+            <button class="edit-btn" (click)="editRoom(room)">Editar</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Add Class Modal -->
+<div class="modal" *ngIf="showAddClassModal">
+  <div class="modal-content add-class-modal">
+    <div class="modal-header">
+      <h2>Añadir nueva clase</h2>
+      <button class="close-button" (click)="closeAddClassModal()">×</button>
+    </div>
+    <div class="modal-body">
+      <p class="modal-subtitle">Completa los detalles de la nueva clase para añadirla al horario.</p>
+      <form [formGroup]="classForm" (ngSubmit)="saveClass()">
+        <div class="form-group">
+          <label>Nombre</label>
+          <input type="text" formControlName="name" placeholder="Nombre de la clase">
+        </div>
+
+        <div class="form-group">
+          <label>Instructor</label>
+          <div class="select-wrapper">
+            <select formControlName="instructor">
+              <option value="">Selecciona instructor</option>
+              <option *ngFor="let instructor of instructors" [value]="instructor.id">{{ instructor.name }}</option>
+            </select>
+            <span class="select-arrow">▼</span>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label>Sala</label>
+          <div class="select-wrapper">
+            <select formControlName="room">
+              <option value="">Selecciona sala</option>
+              <option *ngFor="let room of rooms" [value]="room.id">{{ room.name }}</option>
+            </select>
+            <span class="select-arrow">▼</span>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label>Día</label>
+          <div class="select-wrapper">
+            <select formControlName="day">
+              <option value="">Selecciona día</option>
+              <option value="Lunes">Lunes</option>
+              <option value="Martes">Martes</option>
+              <option value="Miércoles">Miércoles</option>
+              <option value="Jueves">Jueves</option>
+              <option value="Viernes">Viernes</option>
+              <option value="Sábado">Sábado</option>
+              <option value="Domingo">Domingo</option>
+            </select>
+            <span class="select-arrow">▼</span>
+          </div>
+        </div>
+
+        <div class="form-row">
+          <div class="form-group half-width">
+            <label>Hora inicio</label>
+            <div class="time-input-wrapper">
+              <input type="time" formControlName="startTime">
+              <span class="time-icon">🕒</span>
+            </div>
+          </div>
+
+          <div class="form-group half-width">
+            <label>Hora fin</label>
+            <div class="time-input-wrapper">
+              <input type="time" formControlName="endTime">
+              <span class="time-icon">🕒</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label>Capacidad</label>
+          <input type="number" formControlName="capacity" placeholder="Número de participantes">
+        </div>
+
+        <div class="form-group checkbox-group">
+          <label class="checkbox-label">
+            <input type="checkbox" formControlName="recurring">
+            <span>Repetir cada semana</span>
+          </label>
+        </div>
+
+        <div class="modal-footer">
+          <button type="button" class="modal-btn modal-btn-secondary" (click)="closeAddClassModal()">Cancelar</button>
+          <button type="submit" class="modal-btn modal-btn-primary" [disabled]="!classForm.valid">Guardar</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+
+<!-- Class Details Modal -->
+<div class="modal" *ngIf="showClassDetailsModal && selectedClass">
+  <div class="modal-content">
+    <div class="modal-header">
+      <h2>{{ selectedClass.name }}</h2>
+      <button class="close-button" (click)="closeClassDetailsModal()">×</button>
+    </div>
+    <p class="modal-subtitle">{{ selectedClass.day }}, {{ selectedClass.startTime }} - {{ selectedClass.endTime }}</p>
+    
+    <div class="class-details">
+      <div class="instructor-info">
+        <div class="instructor-avatar"></div>
+        <div>
+          <div class="instructor-name">{{ selectedClass.instructor }}</div>
+          <div class="instructor-role">Instructor</div>
+        </div>
+      </div>
+
+      <div class="class-info-grid">
+        <div class="info-item">
+          <span class="info-label">Sala</span>
+          <span class="info-value">{{ selectedClass.room }}</span>
+        </div>
+        <div class="info-item">
+          <span class="info-label">Capacidad</span>
+          <span class="info-value">{{ selectedClass.capacity }} personas</span>
+        </div>
+        <div class="info-item">
+          <span class="info-label">Inscritos</span>
+          <span class="info-value">{{ selectedClass.enrolled }} personas</span>
+        </div>
+        <div class="info-item">
+          <span class="info-label">Ocupación</span>
+          <span class="info-value">{{ selectedClass.occupancy }}%</span>
+          <div class="occupancy-bar">
+            <div class="occupancy-progress" [style.width.%]="selectedClass.occupancy"></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="modal-footer">
+        <button class="modal-btn modal-btn-secondary" (click)="closeClassDetailsModal()">Cerrar</button>
+        <button class="modal-btn modal-btn-secondary" (click)="editClass(selectedClass)">Editar</button>
+        <button class="modal-btn modal-btn-primary" (click)="deleteClass(selectedClass.id)">Eliminar</button>
+      </div>
+    </div>
+  </div>
+</div>

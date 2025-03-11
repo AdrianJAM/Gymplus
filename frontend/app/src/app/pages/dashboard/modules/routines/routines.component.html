@@ -1,1 +1,160 @@
-<p>routines works!</p>
+<div class="routines-container">
+  <!-- Encabezado -->
+  <div class="routines-header">
+    <div class="header-title">
+      <h1>Rutinas</h1>
+      <p>Gestiona las rutinas de entrenamiento y ejercicios para tus miembros</p>
+    </div>
+    <div class="header-actions">
+      <button class="btn-create-routine" (click)="createRoutine()">
+        <span class="plus-icon">+</span>
+        Crear rutina
+      </button>
+      <button class="btn-assign-routine" (click)="assignRoutine()">
+        <span class="assign-icon">👤</span>
+        Asignar rutina
+      </button>
+    </div>
+  </div>
+
+  <!-- Barra de búsqueda y filtros -->
+  <div class="search-filter-container">
+    <div class="search-bar">
+      <span class="search-icon">🔍</span>
+      <input type="text" placeholder="Buscar rutinas o ejercicios..." [(ngModel)]="searchTerm">
+    </div>
+    <div class="filters">
+      <div class="filter-dropdown">
+        <span>{{ selectedLevel }}</span>
+        <span class="dropdown-arrow">▼</span>
+      </div>
+      <div class="filter-dropdown" *ngIf="activeTab === 'routines'">
+        <span>{{ selectedGoal }}</span>
+        <span class="dropdown-arrow">▼</span>
+      </div>
+      <div class="filter-dropdown" *ngIf="activeTab === 'exercises'">
+        <span>{{ selectedMuscleGroup }}</span>
+        <span class="dropdown-arrow">▼</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Pestañas -->
+  <div class="tabs-container">
+    <div class="tab" [class.active]="activeTab === 'routines'" (click)="setActiveTab('routines')">Rutinas</div>
+    <div class="tab" [class.active]="activeTab === 'exercises'" (click)="setActiveTab('exercises')">Ejercicios</div>
+    <div class="tab" [class.active]="activeTab === 'assigned'" (click)="setActiveTab('assigned')">Rutinas asignadas</div>
+  </div>
+
+  <!-- Tarjetas de rutinas -->
+  <div class="routines-grid" *ngIf="activeTab === 'routines'">
+    <!-- Iteramos sobre las rutinas filtradas -->
+    <div class="routine-card" *ngFor="let routine of filterRoutines()">
+      <div class="routine-header">
+        <h3>{{ routine.title }}</h3>
+        <button class="more-options">⋮</button>
+      </div>
+      <p class="routine-description">{{ routine.description }}</p>
+      <div class="routine-tags">
+        <span class="tag tag-level">{{ routine.level }}</span>
+        <span class="tag tag-type">{{ routine.type }}</span>
+        <span class="tag tag-goal">{{ routine.goal }}</span>
+      </div>
+      <div class="routine-details">
+        <div class="detail">
+          <span class="detail-icon">⏱️</span>
+          <span>{{ routine.duration }} min</span>
+        </div>
+        <div class="detail">
+          <span class="detail-icon">💪</span>
+          <span>{{ routine.exercises }} ejercicios</span>
+        </div>
+        <div class="detail">
+          <span class="detail-icon">📊</span>
+          <span>{{ routine.popularity }}% popularidad</span>
+        </div>
+      </div>
+      <div class="routine-creator">
+        <div class="creator-avatar"></div>
+        <span>Creado por {{ routine.creator }}</span>
+      </div>
+      <div class="routine-action">
+        <a href="javascript:void(0)" class="view-routine-link" (click)="viewRoutine(routine.id)">
+          Ver rutina <span class="arrow-icon">→</span>
+        </a>
+      </div>
+    </div>
+  </div>
+
+  <!-- Contenido para la pestaña de ejercicios -->
+  <div *ngIf="activeTab === 'exercises'" class="exercises-container">
+    <div class="exercises-grid">
+      <div class="exercise-card" *ngFor="let exercise of filterExercises()">
+        <div class="exercise-image">
+          <div class="placeholder-image">
+            <span class="image-icon">📷</span>
+          </div>
+        </div>
+        <div class="exercise-content">
+          <h3 class="exercise-title">{{ exercise.name }}</h3>
+          <p class="exercise-description">{{ exercise.description }}</p>
+          <div class="exercise-tags">
+            <span class="tag tag-level">{{ exercise.level }}</span>
+            <ng-container *ngFor="let group of exercise.muscleGroups">
+              <span class="tag tag-muscle">{{ group }}</span>
+            </ng-container>
+          </div>
+          <div class="exercise-action">
+            <a href="javascript:void(0)" class="view-exercise-link" (click)="viewExercise(exercise.id)">
+              Ver detalles <span class="arrow-icon">→</span>
+            </a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Contenido para la pestaña de rutinas asignadas -->
+  <div *ngIf="activeTab === 'assigned'" class="assigned-routines-container">
+    <div class="members-list">
+      <!-- Iteramos sobre los miembros -->
+      <div class="member-card" *ngFor="let member of filterMembers()">
+        <div class="member-header">
+          <div class="member-avatar"></div>
+          <div class="member-info">
+            <h3 class="member-name">{{ member.name }}</h3>
+            <p class="member-details">{{ member.level }} • Objetivo: {{ member.goal }}</p>
+          </div>
+        </div>
+        
+        <div class="assigned-routines-section">
+          <p class="assigned-routines-label">Rutinas asignadas:</p>
+          
+          <!-- Lista de rutinas asignadas -->
+          <div class="assigned-routine-item" *ngFor="let routineId of member.assignedRoutines">
+            <div class="assigned-routine-icon">📋</div>
+            <div class="assigned-routine-info">
+              <span class="assigned-routine-name">{{ getRoutineById(routineId)?.title }}</span>
+            </div>
+            <div class="assigned-routine-tag">
+              <span class="tag" [ngClass]="{'tag-tonificacion': getRoutineById(routineId)?.goal === 'Tonificación', 'tag-perdida-peso': getRoutineById(routineId)?.goal === 'Pérdida de peso', 'tag-hipertrofia': getRoutineById(routineId)?.goal === 'Hipertrofia', 'tag-fuerza': getRoutineById(routineId)?.goal === 'Fuerza', 'tag-funcional': getRoutineById(routineId)?.goal === 'Funcional', 'tag-recuperacion': getRoutineById(routineId)?.goal === 'Recuperación'}">
+                {{ getRoutineById(routineId)?.goal }}
+              </span>
+            </div>
+            <div class="assigned-routine-action">
+              <a href="javascript:void(0)" class="view-routine-link" (click)="viewRoutine(routineId)">
+                <span class="arrow-icon">→</span>
+              </a>
+            </div>
+          </div>
+          
+          <!-- Botón para asignar nueva rutina -->
+          <div class="assign-new-routine-button" (click)="assignNewRoutine(member.id)">
+            <span class="plus-icon">+</span>
+            Asignar nueva rutina
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

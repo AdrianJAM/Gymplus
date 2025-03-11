@@ -1,1 +1,257 @@
-<p>attendance works!</p>
+<!-- Contenedor principal -->
+<div class="attendance-container">
+  <!-- Encabezado -->
+  <div class="attendance-header">
+    <div class="header-title">
+      <h1>Asistencia</h1>
+      <p>Gestiona y visualiza la asistencia de los miembros del gimnasio</p>
+    </div>
+    <div class="header-actions">
+      <button class="btn-action btn-check-in" (click)="registerCheckIn()">
+        <span class="icon">✓</span>
+        Registrar entrada
+      </button>
+      <button class="btn-action btn-check-out" (click)="registerCheckOut()">
+        <span class="icon">⤶</span>
+        Registrar salida
+      </button>
+    </div>
+  </div>
+
+  <!-- Tarjetas de estadísticas -->
+  <div class="stats-cards-container">
+    <div class="stats-card">
+      <div class="stats-card-header">
+        <span class="stats-card-title">Asistencia hoy</span>
+        <span class="stats-card-icon">👥</span>
+      </div>
+      <div class="stats-card-value">{{ attendanceToday }}</div>
+      <div class="stats-card-detail">+{{ attendancePercentage }}% vs. promedio</div>
+    </div>
+    <div class="stats-card">
+      <div class="stats-card-header">
+        <span class="stats-card-title">Miembros actuales</span>
+        <span class="stats-card-icon">👤</span>
+      </div>
+      <div class="stats-card-value">{{ activeMembers }}</div>
+      <div class="stats-card-detail">{{ activeMembersPercentage }}% de miembros activos</div>
+    </div>
+    <div class="stats-card">
+      <div class="stats-card-header">
+        <span class="stats-card-title">Hora pico hoy</span>
+        <span class="stats-card-icon">⏰</span>
+      </div>
+      <div class="stats-card-value">{{ peakHourStart }} - {{ peakHourEnd }}</div>
+      <div class="stats-card-detail">Promedio de {{ peakHourCount }} personas</div>
+    </div>
+    <div class="stats-card">
+      <div class="stats-card-header">
+        <span class="stats-card-title">Miembros inactivos</span>
+        <span class="stats-card-icon">⚠️</span>
+      </div>
+      <div class="stats-card-value">{{ inactiveMembers }}</div>
+      <div class="stats-card-detail">Sin asistencia en los últimos {{ inactiveDays }} días</div>
+    </div>
+  </div>
+
+  <!-- Barra de búsqueda y filtros -->
+  <div class="search-filter-container">
+    <div class="search-bar">
+      <span class="search-icon">🔍</span>
+      <input type="text" placeholder="Buscar por nombre de miembro..." [(ngModel)]="searchTerm">
+    </div>
+    <div class="filter-actions">
+      <div class="date-selector">
+        <button class="date-nav-btn" (click)="changeDate('prev')">
+          <span>&lt;</span>
+        </button>
+        <div class="current-date">
+          <span class="date-icon">📅</span>
+          <span>{{ formatDate(currentDate) }}</span>
+        </div>
+        <button class="date-nav-btn" (click)="changeDate('next')">
+          <span>&gt;</span>
+        </button>
+      </div>
+      <div class="filter-dropdown">
+        <span>Todos los registros</span>
+        <span class="dropdown-arrow">▼</span>
+      </div>
+      <button class="btn-export" (click)="exportRecords()">
+        <span class="export-icon">📊</span>
+        Exportar
+      </button>
+    </div>
+  </div>
+
+  <!-- Pestañas de navegación -->
+  <div class="tabs-container">
+    <div class="tab" [class.active]="selectedTab === 'records'" (click)="setActiveTab('records')">Registros</div>
+    <div class="tab" [class.active]="selectedTab === 'members'" (click)="setActiveTab('members')">Miembros</div>
+    <div class="tab" [class.active]="selectedTab === 'statistics'" (click)="setActiveTab('statistics')">Estadísticas</div>
+  </div>
+
+  <!-- Contenido de las pestañas -->
+  <!-- Pestaña de Registros -->
+  <div *ngIf="selectedTab === 'records'" class="records-container">
+    <div class="records-table-header">
+      <div class="records-title">
+        <h2>Asistencia por miembro</h2>
+        <p>Visualiza la frecuencia de asistencia de cada miembro</p>
+      </div>
+    </div>
+    <table class="records-table">
+      <thead>
+        <tr>
+          <th class="checkbox-column"><input type="checkbox"></th>
+          <th>Miembro</th>
+          <th>Última asistencia</th>
+          <th>Frecuencia</th>
+          <th>Asistencias (mes)</th>
+          <th class="actions-column">Acciones</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let member of filterMembers()">
+          <td class="checkbox-column"><input type="checkbox"></td>
+          <td class="member-column">
+            <div class="member-avatar"></div>
+            <div>
+              <div>{{ member.name }}</div>
+              <div *ngIf="member.membershipType" class="member-type">{{ member.membershipType }} <span *ngIf="member.isActive" class="member-status">• Activo</span></div>
+            </div>
+          </td>
+          <td>
+            <div>{{ member.lastAttendanceDate }} {{ member.lastAttendanceTime }}</div>
+            <div class="attendance-detail" *ngIf="member.lastAttendanceDays">hace {{ member.lastAttendanceDays }} día(s)</div>
+          </td>
+          <td>
+            <span class="frequency-badge" [ngClass]="getFrequencyClass(member.frequency)">{{ member.frequency || 'N/A' }}</span>
+          </td>
+          <td>{{ member.attendanceCount }}</td>
+          <td class="actions-column">
+            <button class="btn-view-history" (click)="viewHistory(member.id)">Ver historial</button>
+            <button class="btn-register" (click)="registerAttendance(member.id)">Registrar</button>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- Pestaña de Miembros -->
+  <div *ngIf="selectedTab === 'members'" class="members-container">
+    <div class="members-table-header">
+      <div class="members-title">
+        <h2>Lista de miembros</h2>
+        <p>Información detallada de todos los miembros</p>
+      </div>
+    </div>
+    <table class="members-table">
+      <thead>
+        <tr>
+          <th class="checkbox-column"><input type="checkbox"></th>
+          <th>Miembro</th>
+          <th>Membresía</th>
+          <th>Estado</th>
+          <th>Última asistencia</th>
+          <th>Frecuencia</th>
+          <th class="actions-column">Acciones</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let member of members">
+          <td class="checkbox-column"><input type="checkbox"></td>
+          <td class="member-column">
+            <div class="member-avatar"></div>
+            <div>{{ member.name }}</div>
+          </td>
+          <td>{{ member.membershipType || 'N/A' }}</td>
+          <td><span class="status-badge" [class.active]="member.isActive">{{ member.isActive ? 'Activo' : 'Inactivo' }}</span></td>
+          <td>{{ member.lastAttendanceDate || member.lastAttendance || 'N/A' }}</td>
+          <td>
+            <span class="frequency-badge" [ngClass]="getFrequencyClass(member.frequency)">{{ member.frequency || 'N/A' }}</span>
+          </td>
+          <td class="actions-column">
+            <button class="btn-view-history" (click)="viewHistory(member.id)">Ver historial</button>
+            <button *ngIf="member.isActive" class="btn-register" (click)="registerAttendance(member.id)">Registrar</button>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- Pestaña de Estadísticas -->
+  <div *ngIf="selectedTab === 'statistics'" class="statistics-container">
+    <!-- Gráficos de asistencia -->
+    <div class="stats-row">
+      <div class="stats-card-wide">
+        <div class="stats-card-header">
+          <h3>Asistencia por día de la semana</h3>
+          <p>Promedio de asistencias por día</p>
+        </div>
+        <div class="chart-container">
+          <!-- Aquí iría un gráfico de barras -->
+          <div class="placeholder-chart">
+            <div *ngFor="let day of weekdayAttendance" class="chart-bar" [style.height.px]="day.count * 2">
+              <div class="bar-value">{{ day.count }}</div>
+              <div class="bar-label">{{ day.day.substring(0, 3) }}</div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="stats-card-wide">
+        <div class="stats-card-header">
+          <h3>Asistencia por hora del día</h3>
+          <p>Distribución de asistencias durante el día</p>
+        </div>
+        <div class="chart-container">
+          <!-- Aquí iría un gráfico de líneas -->
+          <div class="placeholder-chart">
+            <div *ngFor="let hour of hourlyAttendance" class="chart-bar" [style.height.px]="hour.count * 2">
+              <div class="bar-value">{{ hour.count }}</div>
+              <div class="bar-label">{{ hour.hour }}</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="stats-card-full">
+      <div class="stats-card-header">
+        <h3>Tendencia de asistencia mensual</h3>
+        <p>Total de asistencias por mes</p>
+      </div>
+      <div class="chart-container">
+        <!-- Aquí iría un gráfico de área -->
+        <div class="placeholder-chart">
+          <div *ngFor="let month of monthlyAttendance" class="chart-bar-wide" [style.height.px]="month.count / 10">
+            <div class="bar-value">{{ month.count }}</div>
+            <div class="bar-label">{{ month.month }}</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Métricas clave -->
+    <div class="stats-row">
+      <div class="stats-metric-card">
+        <div class="metric-title">Duración promedio</div>
+        <div class="metric-subtitle">Tiempo promedio de permanencia</div>
+        <div class="metric-value">{{ averageDuration }} min</div>
+        <div class="metric-detail">La duración promedio de visita ha aumentado un {{ durationIncrease }}% respecto al mes anterior.</div>
+      </div>
+      <div class="stats-metric-card">
+        <div class="metric-title">Tasa de retención</div>
+        <div class="metric-subtitle">Miembros que asisten regularmente</div>
+        <div class="metric-value">{{ retentionRate }}%</div>
+        <div class="metric-detail">El {{ retentionRate }}% de los miembros asiste al menos 2 veces por semana.</div>
+      </div>
+      <div class="stats-metric-card">
+        <div class="metric-title">Miembros en riesgo</div>
+        <div class="metric-subtitle">Sin asistencia en los últimos 14 días</div>
+        <div class="metric-value">{{ atRiskPercentage }}%</div>
+        <div class="metric-detail">Se recomienda contactar a estos miembros para evitar cancelaciones.</div>
+      </div>
+    </div>
+  </div>
+</div>

@@ -1,1 +1,215 @@
-<p>inventory works!</p>
+<div class="inventory-container">
+  <!-- Header -->
+  <div class="header">
+    <div class="title-section">
+      <h1>Inventario</h1>
+      <p class="subtitle">Gestiona el equipamiento, consumibles y mantenimiento de tu gimnasio</p>
+    </div>
+    <div class="actions">
+      <button class="btn-primary" (click)="openAddItemModal()">
+        <span class="icon">+</span>
+        Añadir item
+      </button>
+      <button class="btn-secondary" (click)="exportInventory()">
+        <span class="icon">↓</span>
+        Exportar
+      </button>
+    </div>
+  </div>
+
+  <!-- Stats Cards -->
+  <div class="stats-container">
+    <div class="stat-card">
+      <div class="stat-icon">⚠️</div>
+      <div class="stat-content">
+        <p class="stat-title">Stock bajo</p>
+        <p class="stat-description">Hay {{ lowStockCount }} productos por debajo del nivel mínimo de stock.</p>
+      </div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-icon">🔧</div>
+      <div class="stat-content">
+        <p class="stat-title">Mantenimiento programado</p>
+        <p class="stat-description">Hay {{ scheduledMaintenanceCount }} equipos con mantenimiento programado esta semana.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Search and Filters -->
+  <div class="filters-container">
+    <div class="search-bar">
+      <span class="search-icon">🔍</span>
+      <input type="text" placeholder="Buscar en inventario..." [(ngModel)]="searchQuery">
+    </div>
+    <div class="filters">
+      <select [(ngModel)]="selectedType">
+        <option value="">Todos los tipos</option>
+        <option value="equipamiento">Equipamiento</option>
+        <option value="consumibles">Consumibles</option>
+        <option value="mantenimiento">Mantenimiento</option>
+      </select>
+      <select [(ngModel)]="selectedStatus">
+        <option value="">Todos los estados</option>
+        <option value="activo">Activo</option>
+        <option value="mantenimiento">Mantenimiento</option>
+        <option value="inactivo">Inactivo</option>
+      </select>
+    </div>
+  </div>
+
+  <!-- Tabs -->
+  <div class="tabs-container">
+    <button class="tab" [class.active]="currentTab === 'equipamiento'" (click)="setTab('equipamiento')">Equipamiento</button>
+    <button class="tab" [class.active]="currentTab === 'consumibles'" (click)="setTab('consumibles')">Consumibles</button>
+    <button class="tab" [class.active]="currentTab === 'mantenimiento'" (click)="setTab('mantenimiento')">Mantenimiento</button>
+  </div>
+
+  <!-- Tables -->
+  <div class="table-container" [ngSwitch]="currentTab">
+    <!-- Equipamiento Table -->
+    <table *ngSwitchCase="'equipamiento'" class="inventory-table">
+      <thead>
+        <tr>
+          <th><input type="checkbox" (change)="toggleSelectAll($event)"></th>
+          <th>Nombre</th>
+          <th>Tipo</th>
+          <th>Cantidad</th>
+          <th>Estado</th>
+          <th>Ubicación</th>
+          <th>Último Mantenimiento</th>
+          <th>Acciones</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let item of equipmentItems">
+          <td><input type="checkbox" [(ngModel)]="item.selected"></td>
+          <td>{{ item.name }}</td>
+          <td>{{ item.type }}</td>
+          <td>{{ item.quantity }}</td>
+          <td>
+            <span class="status-badge" [class]="item.status">{{ item.status }}</span>
+          </td>
+          <td>{{ item.location }}</td>
+          <td>{{ item.lastMaintenance | date:'dd/MM/yyyy' }}</td>
+          <td>
+            <button class="action-button" (click)="openActionMenu(item)">⋮</button>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+
+    <!-- Consumibles Table -->
+    <table *ngSwitchCase="'consumibles'" class="inventory-table">
+      <thead>
+        <tr>
+          <th><input type="checkbox" (change)="toggleSelectAll($event)"></th>
+          <th>Nombre</th>
+          <th>Categoría</th>
+          <th>Cantidad</th>
+          <th>Stock Mínimo</th>
+          <th>Estado</th>
+          <th>Acciones</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let item of consumableItems">
+          <td><input type="checkbox" [(ngModel)]="item.selected"></td>
+          <td>{{ item.name }}</td>
+          <td>{{ item.category }}</td>
+          <td>{{ item.quantity }}</td>
+          <td>{{ item.minStock }}</td>
+          <td>
+            <span class="status-badge" [class]="item.status">{{ item.status }}</span>
+          </td>
+          <td>
+            <button class="action-button" (click)="openActionMenu(item)">⋮</button>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+
+    <!-- Mantenimiento Table -->
+    <table *ngSwitchCase="'mantenimiento'" class="inventory-table">
+      <thead>
+        <tr>
+          <th><input type="checkbox" (change)="toggleSelectAll($event)"></th>
+          <th>Equipo</th>
+          <th>Tipo</th>
+          <th>Estado</th>
+          <th>Fecha</th>
+          <th>Técnico</th>
+          <th>Acciones</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let item of maintenanceItems">
+          <td><input type="checkbox" [(ngModel)]="item.selected"></td>
+          <td>{{ item.equipment }}</td>
+          <td>{{ item.type }}</td>
+          <td>
+            <span class="status-badge" [class]="item.status">{{ item.status }}</span>
+          </td>
+          <td>{{ item.date | date:'dd/MM/yyyy' }}</td>
+          <td>{{ item.technician }}</td>
+          <td>
+            <button class="action-button" (click)="openActionMenu(item)">⋮</button>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<!-- Add Item Modal -->
+<div class="modal" *ngIf="showAddItemModal">
+  <div class="modal-content">
+    <div class="modal-header">
+      <h2>Añadir nuevo item</h2>
+      <button class="close-button" (click)="closeAddItemModal()">×</button>
+    </div>
+    <div class="modal-body">
+      <form [formGroup]="itemForm" (ngSubmit)="saveItem()">
+        <div class="form-group">
+          <label>Tipo</label>
+          <select formControlName="type">
+            <option value="equipamiento">Equipamiento</option>
+            <option value="consumible">Consumible</option>
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label>Nombre</label>
+          <input type="text" formControlName="name">
+        </div>
+
+        <div class="form-group">
+          <label>Categoría</label>
+          <select formControlName="category">
+            <option value="">Selecciona categoría</option>
+            <option *ngFor="let cat of categories" [value]="cat">{{ cat }}</option>
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label>Cantidad</label>
+          <input type="number" formControlName="quantity">
+        </div>
+
+        <div class="form-group" *ngIf="itemForm.get('type')?.value === 'equipamiento'">
+          <label>Ubicación</label>
+          <input type="text" formControlName="location">
+        </div>
+
+        <div class="form-group" *ngIf="itemForm.get('type')?.value === 'consumible'">
+          <label>Stock Mínimo</label>
+          <input type="number" formControlName="minStock">
+        </div>
+
+        <div class="modal-footer">
+          <button class="Cancelar" (click)="closeAddItemModal()">Cancelar</button>
+          <button class="Guardar" type="submit" [disabled]="!itemForm.valid">Guardar</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
