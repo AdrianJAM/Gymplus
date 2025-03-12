@@ -1,2 +1,5 @@
-{  "rewrites": [    
-    { "source": "/(.*)", "destination": "/app/src/app/app.routes.ts" }  ]}
+{
+    "rewrites": [
+      { "source": "/(.*)", "destination": "/dist/$1" }
+    ]
+  }
