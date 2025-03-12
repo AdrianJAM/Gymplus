@@ -11,6 +11,3 @@ membership_routes.route("/membership/<string:membership_id>", methods=["DELETE"]
     MembershipController.delete
 )
 
-membership_routes.route(
-    "/membership/buy/<string:user_id>/<string:membership_id>", methods=["POST"]
-)(MembershipController.buy_membership)
