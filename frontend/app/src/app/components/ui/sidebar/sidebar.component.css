@@ -116,69 +116,83 @@
   stroke: rgb(220, 38, 38);
   transform: scale(1.1);
 }
-/* Estilos para el título del sidebar */
-.sidebar-title {
-  font-size: 1.2rem;
-  font-weight: 700;
-  color: #333;
-  white-space: normal;
-  overflow: visible;
-  word-wrap: break-word;
-  max-width: 100%;
-  margin: 0;
-  padding: 0.5rem 0;
-  letter-spacing: 0.5px;
-}
-/* Estilos para el rol del sidebar */
-.sidebar-role {
-  font-size: 0.9rem;
-  font-weight: 500;
-  color: #666;
-  margin: 0;
-  padding: 0;
-  line-height: 1.2;
-  display: block;
-  white-space: nowrap;
-}
-/* Estilos para el contenedor principal del sidebar */
+
+/* Estilos del sidebar */
 .sidebar-container {
-  position: fixed;
-  top: 0;
-  left: 0;
-  height: 100vh;
-  z-index: 40;
-  display: flex;
-  flex-direction: column;
-  overflow-x: hidden;
-  box-shadow: 2px 0 10px rgba(0, 0, 0, 0.1);
-  transition: width 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-  background-color: white;
+    box-shadow: 2px 0 10px rgba(0, 0, 0, 0.1);
+    z-index: 40;
+    transition: all 0.3s ease-in-out;
+    overflow: hidden;
+    background-color: white;
 }
 
-/* Estilos para el contenido interno del sidebar */
+.sidebar-container.closed {
+    width: 0 !important;
+}
+
 .sidebar-content {
-  display: flex;
-  flex-direction: column;
-  height: 100%;
-  opacity: 1;
-  visibility: visible;
-  transition: opacity 0.2s ease-in-out;
-  width: 16rem;
-}
-.sidebar-container.closed .sidebar-content {
-  opacity: 0;
-  visibility: hidden;
+    overflow-y: auto;
+    overflow-x: hidden;
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    opacity: 1;
+    visibility: visible;
+    transition: opacity 0.2s ease-in-out;
+    width: 16rem;
 }
 
-/* Estilos para el encabezado del sidebar */
-.sidebar-header {
-  background-color: white;
-  border-bottom: 1px solid #f0f0f0;
-  z-index: 10;
-}
 .sidebar-container.closed .sidebar-content {
-  opacity: 0;
-  visibility: hidden;
+    opacity: 0;
+    visibility: hidden;
+}
+
+.sidebar-header {
+    border-bottom: 1px solid #f1f1f1;
+    background-color: white;
+}
+
+.sidebar-title {
+    font-size: 1.3rem;
+    font-weight: 700;
+    color: #333;
+    margin: 0;
+    padding: 0.5rem 0;
+    letter-spacing: 0.5px;
+}
+
+.sidebar-role {
+    font-size: 0.9rem;
+    font-weight: 500;
+    color: #666;
+    margin: 0;
+    padding: 0;
+    line-height: 1.2;
+    display: block;
+    white-space: nowrap;
+}
+
+/* Estilos para los botones de toggle */
+.button-content {
+    transition: all 0.3s ease;
+}
+
+button:hover .button-content {
+    transform: scale(1.05);
+}
+
+/* Estilos de los elementos del menú */
+.menu-item {
+    transition: all 0.2s ease;
+}
+
+.menu-item:hover {
+    background-color: rgba(255, 107, 107, 0.1);
+}
+
+.menu-item.active {
+    background-color: rgba(254, 202, 87, 0.2);
+    border-left: 3px solid #ff6b6b;
 }
 
 /* Ajuste para los elementos de navegación */
@@ -186,33 +200,10 @@
   white-space: nowrap;
   overflow: hidden;
 }
+
 /* Estilos para el contenedor del título */
 .sidebar-title-container {
   display: flex;
   flex-direction: column;
   max-width: 80%;
-}
-
-/* Estilos para el título principal - Corregido para evitar duplicación */
-.sidebar-title {
-  font-size: 1.3rem;
-  font-weight: 700;
-  color: #333;
-  margin: 0;
-  padding: 0;
-  line-height: 1.2;
-  white-space: nowrap;
-  overflow: visible;
-}
-
-/* Estilos para el rol */
-.sidebar-role {
-  font-size: 0.9rem;
-  font-weight: 500;
-  color: #666;
-  margin: 0;
-  padding: 0;
-  line-height: 1.2;
-  display: block;
-  white-space: nowrap;
 }

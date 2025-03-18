@@ -4,7 +4,7 @@ import { RouterModule } from '@angular/router';
 import { MatIconModule } from '@angular/material/icon';
 import { SidebarMenuItem, SidebarService } from '../../../core/services/sidebar/sidebar.service';
 import { UserStateService } from '../../..//core/services/users/user-state.service';
-import { trigger, state, style, transition, animate, keyframes } from '@angular/animations';
+import { trigger, state, style, transition, animate } from '@angular/animations';
 
 @Component({
   selector: 'app-sidebar',
@@ -13,25 +13,17 @@ import { trigger, state, style, transition, animate, keyframes } from '@angular/
   templateUrl: './sidebar.component.html',
   styleUrls: ['./sidebar.component.css'],
   animations: [
-    trigger('toggleButton', [
-      state('void', style({
-        opacity: 0,
-        transform: 'translateX(-20px)'
+    trigger('slideInOut', [
+      state('in', style({
+        transform: 'translateX(0)',
+        opacity: 1
       })),
-      state('*', style({
-        opacity: 1,
-        transform: 'translateX(0)'
+      state('out', style({
+        transform: 'translateX(-100%)',
+        opacity: 0
       })),
-      transition('void => *', [
-        animate('0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275)', keyframes([
-          style({ opacity: 0, transform: 'translateX(-20px)', offset: 0 }),
-          style({ opacity: 0.5, transform: 'translateX(10px)', offset: 0.7 }),
-          style({ opacity: 1, transform: 'translateX(0)', offset: 1.0 })
-        ]))
-      ]),
-      transition('* => void', [
-        animate('0.3s ease-out')
-      ])
+      transition('in => out', animate('300ms ease-in-out')),
+      transition('out => in', animate('300ms ease-in-out'))
     ])
   ]
 })

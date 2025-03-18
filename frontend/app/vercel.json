@@ -1,8 +1,5 @@
 {
-  "routes": [
-    {
-      "src": "/(.*)",
-      "dest": "/browser/index.html"
-    }
+  "rewrites": [
+    { "source": "/(.*)", "destination": "/frontend/browser/index.html" }
   ]
 }
